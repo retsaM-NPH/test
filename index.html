@@ -1,4 +1,78 @@
-<h1>Xin chào, dây là bản thử nghiệm đầu tiên duma</h1>
-<p style="color: blue;">Đây là kỷ niệm năm 2026</p>
-<button onclick="alert('Bất ngờ chưa!')">Bấm vào đây</button>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/adrUSqlgRVo?si=e9_itIizf8387L9q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Xuân - Cinematic Experience</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font chữ -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Trình phát nhạc ẩn (Tự động kích hoạt khi tương tác) -->
+    <div id="audio-ui">
+        <div class="vinyl-record" id="vinyl"></div>
+        <p>Đang phát: <span>Tháng năm rực rỡ</span></p>
+    </div>
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Canvas cho hiệu ứng Gió thổi & Thời gian trôi -->
+    <canvas id="wind-canvas"></canvas>
+
+    <div class="main-container">
+        <!-- CHƯƠNG 1: CUỐN SÁCH KÝ ỨC -->
+        <section class="scene" id="scene-book">
+            <div class="book-container">
+                <div class="page left-page">
+                    <h1 class="title">Chương 1: Những Khởi Đầu</h1>
+                    <p class="story-text">Mọi thứ bắt đầu từ những ngày khoác màu áo xanh tình nguyện. Những buổi dọn dẹp cảnh quan, mồ hôi ướt đẫm khi xúc từng xe đất, gom từng nhành cây. Chúng ta bước vào đời nhau từ những công việc nhọc nhằn mà rộn rã tiếng cười ấy.</p>
+                </div>
+                <div class="page right-page">
+                    <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=800" alt="Tình nguyện">
+                </div>
+            </div>
+        </section>
+
+        <!-- CHƯƠNG 2: THƯỚC PHIM ĐIỆN ẢNH (Ảnh & Video xen kẽ) -->
+        <section class="scene" id="scene-film">
+            <div class="film-strip">
+                <div class="film-frame text-frame">
+                    <h2>Chương 2: Dưới Ống Kính</h2>
+                    <p>Những tờ mờ sáng đón bình minh nơi con đường quê, những dải đồi mờ sương và thảm cỏ xanh mướt. Hay cả chặng đường 10km đồng hành... tất cả được thu gọn lại đây.</p>
+                </div>
+                <!-- Khung Video (Dùng ảnh GIF giả lập hoặc iframe) -->
+                <div class="film-frame video-frame">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&mute=1&controls=0" frameborder="0"></iframe>
+                </div>
+                <div class="film-frame img-frame">
+                    <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=800" alt="Bình minh">
+                </div>
+                <div class="film-frame text-frame">
+                    <p>Và không thể thiếu những đêm muộn kiệt sức, tự thưởng cho nhau những bát ramen nghi ngút khói, đĩa sashimi cá hồi hay bánh xèo ngập sốt mayonnaise.</p>
+                </div>
+                <div class="film-frame img-frame">
+                    <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800" alt="Sashimi">
+                </div>
+            </div>
+        </section>
+
+        <!-- CHƯƠNG 3: THỜI GIAN TRÔI & LỜI KẾT -->
+        <section class="scene" id="scene-time">
+            <div class="time-content">
+                <h2 class="fade-text">Thời gian cứ thế trôi...</h2>
+                <p class="fade-text delay-1">Giống như những cơn gió thổi qua giảng đường.</p>
+                <p class="fade-text delay-2">Dù sau này mỗi người một hướng, chỉ cần áp điện thoại vào chiếc móc khóa này...</p>
+                <h1 class="fade-text final-glow">Ký ức sẽ luôn ở đây.</h1>
+            </div>
+        </section>
+    </div>
+
+    <!-- Thư viện lõi GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
