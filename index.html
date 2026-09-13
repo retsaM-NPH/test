@@ -2,143 +2,192 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanh Xuân Vườn Trường</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thanh Xuân Vườn Trường | Kỷ Niệm 2026</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     
     <link rel="stylesheet" href="style.css">
     
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <div id="sunbeams-container"></div>
-    <div id="falling-leaves-container"></div>
+    <div id="sunbeams-container" aria-hidden="true"></div>
+    <div id="falling-leaves-container" aria-hidden="true"></div>
 
-    <audio id="bg-audio" loop>
-        <source src="nhac-demo.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bg-audio" preload="auto">
+        </audio>
 
     <div id="gatekeeper">
         <div class="quiz-card">
-            <img src="avatar-nhom.jpg" alt="Nhóm">
+            <img src="https://images.unsplash.com/photo-1529156069898-49953eb1b5b4?w=400&q=80" alt="Avatar Nhóm">
+            
             <h2>Ký hiệu bí mật của nhóm là gì?</h2>
+            
             <div class="btn-grid">
-                <button class="quiz-btn" data-correct="false">A. Trà sữa full topping</button>
+                <button class="quiz-btn" data-correct="false">A. Trà sữa</button>
                 <button class="quiz-btn" data-correct="false">B. Chạy Deadline</button>
                 <button class="quiz-btn" data-correct="true">C. Thanh Xuân</button>
                 <button class="quiz-btn" data-correct="false">D. Ngủ nướng</button>
             </div>
+            
             <p class="error-msg" id="error-msg">Sai rồi, thử nhớ lại xem!</p>
         </div>
     </div>
 
-    <section class="hero-section" id="hero">
-        <h1 class="hero-title handwriting">Tháng Năm Rực Rỡ</h1>
-        <p class="hero-subtitle">Gửi lại nụ cười ở góc sân trường</p>
-        
-        <div class="music-widget">
-            <div class="disk" id="disk"></div>
-            <div class="track-info">
-                <span id="current-song-name">Thanh Xuân - Da LAB</span>
-            </div>
-            <div class="controls">
-                <button id="prev-btn"><i class="fas fa-backward"></i></button>
-                <button id="play-btn"><i class="fas fa-play"></i></button>
-                <button id="next-btn"><i class="fas fa-forward"></i></button>
-            </div>
-        </div>
-    </section>
-
-    <section class="section-book">
-        <div class="book-wrapper">
-            <div id="flipbook">
-                <div class="page hard cover-front">
-                    <h2 class="handwriting">Album Ký Ức</h2>
-                </div>
-                
-                <div class="page paper-texture text-page">
-                    <h3 class="handwriting">Chuyến đi Đà Lạt</h3>
-                    <p class="handwriting">Gió lạnh, sương mù và những câu chuyện chưa kể hết...</p>
-                </div>
-                
-                <div class="page paper-texture image-page">
-                    <div class="photo-frame">
-                        <img src="da-lat.jpg" loading="lazy" alt="Đà Lạt">
-                    </div>
-                </div>
-
-                <div class="page hard cover-back">
-                    <h2 class="handwriting">Còn tiếp...</h2>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section-timeline">
-        <svg class="tree-branch" viewBox="0 0 100 1000" preserveAspectRatio="none">
-            <path d="M50,0 Q70,250 40,500 T50,1000" class="branch-path"></path>
-        </svg>
-
-        <div class="timeline-container">
-            <div class="timeline-node left">
-                <div class="dewdrop"></div>
-                <div class="node-content">
-                    <div class="photo-polaroid">
-                        <img src="gap-mat.jpg" loading="lazy" alt="Gặp mặt">
-                    </div>
-                    <div class="node-text">
-                        <h4>Tháng 9/2022</h4>
-                        <p>Ngày đầu tiên gặp mặt.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline-node right">
-                <div class="dewdrop"></div>
-                <div class="node-content">
-                    <div class="photo-polaroid">
-                        <img src="chuyen-di.jpg" loading="lazy" alt="Chuyến đi">
-                    </div>
-                    <div class="node-text">
-                        <h4>Tháng 12/2023</h4>
-                        <p>Chuyến đi xa đầu tiên.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section-members">
-        <h2 class="section-title handwriting">Mảnh Ghép Của Chúng Ta</h2>
-        
-        <div class="members-grid">
-            <div class="member-card">
-                <div class="card-front">
-                    <div class="avatar-wrapper">
-                        <img src="hung.jpg" loading="lazy" alt="Hùng">
-                    </div>
-                    <h3>Hùng</h3>
-                </div>
-                
-                <div class="card-hover-info">
-                    <p>Người gánh vác mọi plan đi chơi, chuyên gia lo xa.</p>
-                    
-                    <div class="reaction-box">
-                        <button class="react-btn heart-btn">
-                            <i class="fas fa-heart"></i> <span class="counter">0</span>
-                        </button>
-                        <button class="react-btn smile-btn">
-                            <i class="fas fa-laugh-squint"></i> <span class="counter">0</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <main> <section class="hero-section" id="hero">
+            <h1 class="hero-title handwriting">Tháng Năm Rực Rỡ</h1>
+            <p class="hero-subtitle">Gửi lại nụ cười ở góc sân trường</p>
             
+            <div class="music-widget">
+                <div class="disk" id="disk"></div>
+                <div class="track-info">
+                    <span id="current-song-name">Đang tải nhạc...</span>
+                </div>
+                <div class="controls">
+                    <button id="prev-btn" aria-label="Bài trước"><i class="fas fa-backward"></i></button>
+                    <button id="play-btn" aria-label="Phát/Tạm dừng"><i class="fas fa-play"></i></button>
+                    <button id="next-btn" aria-label="Bài sau"><i class="fas fa-forward"></i></button>
+                </div>
             </div>
-    </section>
+        </section>
+
+        <section class="section-book">
+            <div class="book-wrapper">
+                <div id="flipbook">
+                    
+                    <div class="page hard cover-front">
+                        <h2 class="handwriting">Album Ký Ức</h2>
+                    </div>
+                    
+                    <div class="page paper-texture text-page">
+                        <h3 class="handwriting">Chuyến đi Đà Lạt</h3>
+                        <p class="handwriting">Gió lạnh, sương mù và những câu chuyện chưa kể hết. Thanh xuân là những chuyến đi không màng đích đến, chỉ cần có nhau.</p>
+                    </div>
+                    
+                    <div class="page paper-texture image-page">
+                        <div class="photo-frame">
+                            <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&q=80" loading="lazy" alt="Đà Lạt">
+                            <p class="handwriting" style="text-align: center; margin-top: 15px; font-size: 1.5rem;">Săn mây lúc 5h sáng</p>
+                        </div>
+                    </div>
+
+                    <div class="page paper-texture image-page">
+                        <div class="photo-frame">
+                            <iframe 
+                                style="width: 100%; height: 250px; border: none; border-radius: 4px;" 
+                                src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=0" 
+                                title="Video Kỷ Niệm" 
+                                loading="lazy" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                            <p class="handwriting" style="text-align: center; margin-top: 15px; font-size: 1.5rem;">Khoảnh khắc khùng điên nhất</p>
+                        </div>
+                    </div>
+
+                    <div class="page hard cover-back">
+                        <h2 class="handwriting">Vẫn còn tiếp...</h2>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+        <section class="section-timeline">
+            <svg class="tree-branch" viewBox="0 0 100 1000" preserveAspectRatio="none">
+                <path d="M50,0 Q70,250 40,500 T50,1000" class="branch-path"></path>
+            </svg>
+
+            <div class="timeline-container">
+                
+                <div class="timeline-node left">
+                    <div class="dewdrop"></div>
+                    <div class="node-content">
+                        <div class="photo-polaroid">
+                            <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=500&q=80" loading="lazy" alt="Gặp mặt">
+                        </div>
+                        <div class="node-text">
+                            <h4>Tháng 9/2022</h4>
+                            <p>Ngày đầu tiên chúng ta chung một màu áo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-node right">
+                    <div class="dewdrop"></div>
+                    <div class="node-content">
+                        <div class="photo-polaroid">
+                            <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=500&q=80" loading="lazy" alt="Chuyến đi">
+                        </div>
+                        <div class="node-text">
+                            <h4>Tháng 12/2023</h4>
+                            <p>Vượt 100 cây số dưới trời mưa lớn.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="section-members">
+            <h2 class="section-title handwriting">Mảnh Ghép Của Chúng Ta</h2>
+            
+            <div class="members-grid">
+                
+                <div class="member-card">
+                    <div class="card-front">
+                        <div class="avatar-wrapper">
+                            <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&q=80" loading="lazy" alt="Hùng">
+                        </div>
+                        <h3>Hùng</h3>
+                    </div>
+                    
+                    <div class="card-hover-info">
+                        <p>Project Manager của nhóm. Người gánh vác mọi plan đi chơi, chuyên gia lo xa.</p>
+                        <div class="reaction-box">
+                            <button class="react-btn heart-btn" aria-label="Thả tim">
+                                <i class="fas fa-heart"></i> <span class="counter">24</span>
+                            </button>
+                            <button class="react-btn smile-btn" aria-label="Mặt cười">
+                                <i class="fas fa-laugh-squint"></i> <span class="counter">8</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="member-card">
+                    <div class="card-front">
+                        <div class="avatar-wrapper">
+                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&q=80" loading="lazy" alt="Lan Anh">
+                        </div>
+                        <h3>Lan Anh</h3>
+                    </div>
+                    
+                    <div class="card-hover-info">
+                        <p>Cô gái mang năng lượng chữa lành, người luôn có sẵn đồ ăn vặt trong balo.</p>
+                        <div class="reaction-box">
+                            <button class="react-btn heart-btn" aria-label="Thả tim">
+                                <i class="fas fa-heart"></i> <span class="counter">12</span>
+                            </button>
+                            <button class="react-btn smile-btn" aria-label="Mặt cười">
+                                <i class="fas fa-laugh-squint"></i> <span class="counter">15</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+        </section>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
+    
     <script src="script.js"></script>
+    
 </body>
 </html>
