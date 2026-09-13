@@ -1,18 +1,10 @@
-/**
- * THANH XUÂN VƯỜN TRƯỜNG - KỶ NIỆM 2026
- * Core Engine & Interactive Physics
- */
-'use strict'; // Kích hoạt chế độ kiểm tra lỗi nghiêm ngặt của JS
+'use strict'; 
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    /* =========================================================
-       1. HỆ THỐNG ÂM NHẠC (Playlist & Audio Player)
-    ========================================================= */
     const playlist = [
-        { title: "Thanh Xuân - Da LAB", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-        { title: "Tình Bạn Diệu Kỳ", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-        { title: "Tháng Năm Rực Rỡ", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+        { title: "Thanh Xuân - Da LAB", src: "nhac-1.mp3" }, // Đã đổi sang local
+        { title: "Tình Bạn Diệu Kỳ", src: "nhac-2.mp3" }
     ];
     let currentTrackIndex = 0;
     
@@ -21,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnPlay = document.getElementById('btn-play');
     const vinylDisk = document.querySelector('.vinyl-disk');
     
-    // Khởi tạo bài hát đầu tiên vào bộ nhớ tạm
     const loadTrack = (index) => {
         audioEl.src = playlist[index].src;
         trackTitleEl.textContent = playlist[index].title;
@@ -30,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const togglePlay = () => {
         if (audioEl.paused) {
-            audioEl.play().catch(e => console.warn("Trình duyệt chặn Audio:", e));
+            audioEl.play().catch(e => console.warn("Lỗi Audio:", e));
             vinylDisk.style.animationPlayState = 'running';
             btnPlay.innerHTML = '<i class="fas fa-pause"></i>';
         } else {
@@ -46,12 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!audioEl.paused) audioEl.play();
     };
 
-    // Điều khiển Audio qua Event Delegation (Gắn 1 lần vào thanh Nav)
-    const audioController = document.querySelector('.music-controller');
-    audioController.addEventListener('click', (e) => {
+    document.querySelector('.music-controller').addEventListener('click', (e) => {
         const btn = e.target.closest('button');
         if (!btn) return;
-        
         if (btn.id === 'btn-play') togglePlay();
         if (btn.id === 'btn-next') nextTrack();
         if (btn.id === 'btn-prev') {
@@ -61,93 +49,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    audioEl.addEventListener('ended', nextTrack); // Tự động qua bài
+    audioEl.addEventListener('ended', nextTrack);
 
-    /* =========================================================
-       2. BỘ PHÁT SINH MÔI TRƯỜNG VẬT LÝ (Procedural Environment)
-    ========================================================= */
+    /* --- Bơm Môi trường (Gió, Nắng) --- */
     const generateEnvironment = () => {
-        // Dùng DocumentFragment để chống Reflow màn hình (Cực kỳ tối ưu)
-        const fragmentSunbeams = document.createDocumentFragment();
-        const fragmentLeaves = document.createDocumentFragment();
+        const fragSun = document.createDocumentFragment();
+        const fragLeaf = document.createDocumentFragment();
 
-        // Bơm 5 tia nắng ngẫu nhiên
         for (let i = 0; i < 5; i++) {
             const beam = document.createElement('div');
             beam.className = 'sunbeam';
             beam.style.left = `${Math.random() * 100}vw`;
             beam.style.width = `${Math.random() * 80 + 40}px`;
-            beam.style.height = `${Math.random() * 50 + 50}vh`;
             beam.style.animationDuration = `${Math.random() * 6 + 10}s`;
-            beam.style.animationDelay = `${Math.random() * 3}s`;
-            fragmentSunbeams.appendChild(beam);
+            fragSun.appendChild(beam);
         }
 
-        // Bơm 30 chiếc lá rơi ngẫu nhiên
         for (let i = 0; i < 30; i++) {
             const leaf = document.createElement('div');
             leaf.className = 'leaf';
             leaf.style.left = `${Math.random() * 100}vw`;
             leaf.style.animationDuration = `${Math.random() * 5 + 7}s, ${Math.random() * 2 + 2}s`; 
-            leaf.style.animationDelay = `${Math.random() * 5}s, 0s`;
             leaf.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
-            fragmentLeaves.appendChild(leaf);
+            fragLeaf.appendChild(leaf);
         }
 
-        document.getElementById('sunbeams-container').appendChild(fragmentSunbeams);
-        document.getElementById('falling-leaves-container').appendChild(fragmentLeaves);
+        document.getElementById('sunbeams-container').appendChild(fragSun);
+        document.getElementById('falling-leaves-container').appendChild(fragLeaf);
     };
 
-    /* =========================================================
-       3. CỔNG BẢO MẬT & MỞ KHÓA TRẢI NGHIỆM (Gatekeeper)
-    ========================================================= */
+    /* --- Mở Cổng Bảo Mật --- */
     const gatekeeper = document.getElementById('gatekeeper');
-    const quizError = document.getElementById('quiz-error');
-
     gatekeeper.addEventListener('click', (e) => {
         const btn = e.target.closest('.quiz-btn');
-        if (!btn) return; // Nếu bấm ra ngoài nút thì bỏ qua
+        if (!btn) return;
 
-        const isCorrect = btn.getAttribute('data-correct') === 'true';
-
-        if (isCorrect) {
-            // Hiệu ứng mở khóa thành công
-            quizError.classList.remove('show');
-            gatekeeper.classList.add('unlocked-fade'); // Kích hoạt CSS chuyển cảnh mờ dần
-            document.body.classList.add('unlocked');   // Mở khóa cuộn dọc
+        if (btn.getAttribute('data-correct') === 'true') {
+            document.getElementById('quiz-error').classList.remove('show');
+            gatekeeper.classList.add('unlocked-fade');
+            document.body.classList.add('unlocked');
             
-            // Kích hoạt hệ sinh thái
             togglePlay();
             generateEnvironment();
-            initScrollEngines(); // Đánh thức GSAP & Flipbook
+            initScrollEngines();
 
-            // Xóa hộp thoại khỏi DOM sau khi mờ hẳn (Giải phóng RAM)
             setTimeout(() => gatekeeper.remove(), 1500);
-
         } else {
-            // Hiệu ứng sai
-            quizError.classList.add('show');
-            const wrapper = gatekeeper.querySelector('.quiz-wrapper');
-            // Dùng Web Animations API mượt hơn CSS Keyframes
-            wrapper.animate([
-                { transform: 'translateX(0px)' },
-                { transform: 'translateX(-12px)' },
-                { transform: 'translateX(12px)' },
-                { transform: 'translateX(0px)' }
-            ], { duration: 400, easing: 'cubic-bezier(.36,-0.04,.15,1.64)' });
+            document.getElementById('quiz-error').classList.add('show');
+            gatekeeper.querySelector('.quiz-wrapper').animate([
+                { transform: 'translateX(0px)' }, { transform: 'translateX(-12px)' },
+                { transform: 'translateX(12px)' }, { transform: 'translateX(0px)' }
+            ], { duration: 400 });
         }
     });
 
-    /* =========================================================
-       4. TƯƠNG TÁC THÀNH VIÊN (Micro-interactions)
-    ========================================================= */
-    // Dùng Event Delegation (Chỉ gắn 1 Listener cho cả 100 thành viên)
-    const membersSection = document.querySelector('.section-members');
-    
-    membersSection.addEventListener('click', (e) => {
+    /* --- Tương tác thả tim --- */
+    document.querySelector('.section-members').addEventListener('click', (e) => {
         const actionBtn = e.target.closest('.action-btn');
         if (!actionBtn) return;
-
         const countSpan = actionBtn.querySelector('.count');
         let currentVal = parseInt(countSpan.textContent);
 
@@ -157,71 +116,60 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             actionBtn.classList.add('active');
             countSpan.textContent = currentVal + 1;
-            
-            // Hiệu ứng hạt nảy (Pop)
             actionBtn.animate([
-                { transform: 'scale(1)' },
-                { transform: 'scale(1.2)' },
-                { transform: 'scale(1)' }
-            ], { duration: 300, easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' });
+                { transform: 'scale(1)' }, { transform: 'scale(1.2)' }, { transform: 'scale(1)' }
+            ], { duration: 300 });
         }
     });
 
-    /* =========================================================
-       5. ĐỘNG CƠ GSAP & FLIPBOOK (Chỉ khởi động khi đã mở khóa)
-    ========================================================= */
+    /* --- Động cơ lõi (Scroll, GSAP, Flipbook) --- */
     function initScrollEngines() {
-        
-        // --- A. FLIPBOOK ENGINE ---
-        const flipbookEl = document.getElementById('flipbook-engine');
-        if (flipbookEl) {
-            const pageFlip = new St.PageFlip(flipbookEl, {
-                width: 480, height: 650, // Tỷ lệ chuẩn sách
-                size: "stretch", minWidth: 315, maxWidth: 1000, minHeight: 420, maxHeight: 1350,
-                maxShadowOpacity: 0.4, showCover: true, mobileScrollSupport: false,
-                usePortrait: true // Cho phép hiển thị 1 trang trên điện thoại dọc
-            });
-            pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+        // 1. Khởi tạo Flipbook (Bọc Try-Catch chống sập)
+        try {
+            const flipbookEl = document.getElementById('flipbook-engine');
+            if (flipbookEl) {
+                // Hiển thị lại các trang (do CSS đã ẩn đi lúc chờ load)
+                document.querySelectorAll('.page').forEach(p => p.style.display = 'block');
+                
+                const pageFlip = new St.PageFlip(flipbookEl, {
+                    width: 480, height: 650,
+                    size: "stretch", minWidth: 315, maxWidth: 1000, minHeight: 420, maxHeight: 1350,
+                    maxShadowOpacity: 0.4, showCover: true, mobileScrollSupport: false
+                });
+                pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+            }
+        } catch (error) {
+            console.error("Lỗi khởi tạo Sách:", error);
         }
 
-        // --- B. GSAP PARALLAX (Bối cảnh 3D) ---
-        gsap.registerPlugin(ScrollTrigger);
+        // 2. Khởi tạo Parallax & SVG
+        try {
+            gsap.registerPlugin(ScrollTrigger);
 
-        // Cuộn lớp nền chậm lại
-        gsap.to('.parallax-bg', {
-            yPercent: 20, ease: "none",
-            scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: true }
-        });
-
-        // Cuộn lớp hoa lá phía trước nhanh hơn & hơi xoay
-        gsap.to('.parallax-fore', {
-            yPercent: -25, rotation: -8, ease: "none",
-            scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: true }
-        });
-
-        // --- C. GSAP TIMELINE SVG DRAW (Vẽ cành cây) ---
-        const branchPath = document.querySelector('.branch-path');
-        if (branchPath) {
-            // Tự động đo độ dài thực tế của nét vẽ SVG
-            const pathLength = branchPath.getTotalLength();
-            
-            // Khởi tạo trạng thái ban đầu: Giấu nét vẽ đi
-            gsap.set(branchPath, { 
-                strokeDasharray: pathLength, 
-                strokeDashoffset: pathLength 
+            gsap.to('.parallax-bg', {
+                yPercent: 20, ease: "none",
+                scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: true }
             });
 
-            // Gắn hoạt ảnh nét vẽ đồng bộ với thao tác cuộn màn hình
-            gsap.to(branchPath, {
-                strokeDashoffset: 0, // Vẽ đến đâu hiện đến đó
-                ease: "none",
-                scrollTrigger: {
-                    trigger: ".section-timeline", // Bắt đầu vẽ khi thấy khối Timeline
-                    start: "top 60%", // Kích hoạt khi khối lên đến 60% màn hình
-                    end: "bottom 80%", // Kết thúc vẽ khi xuống cuối khối
-                    scrub: 1 // Tạo độ trễ mượt 1 giây khi vuốt (Cinematic effect)
-                }
+            gsap.to('.parallax-fore', {
+                yPercent: -25, rotation: -8, ease: "none",
+                scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: true }
             });
+
+            const branchPath = document.querySelector('.branch-path');
+            if (branchPath) {
+                const pathLength = branchPath.getTotalLength();
+                gsap.set(branchPath, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
+
+                gsap.to(branchPath, {
+                    strokeDashoffset: 0, ease: "none",
+                    scrollTrigger: {
+                        trigger: ".section-timeline", start: "top 60%", end: "bottom 80%", scrub: 1
+                    }
+                });
+            }
+        } catch (err) {
+            console.error("Lỗi GSAP:", err);
         }
     }
 });
