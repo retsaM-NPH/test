@@ -3,76 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanh Xuân - Cinematic Experience</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Font chữ -->
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <title>Thanh Xuân Vườn Trường</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ================= 1. GLOBAL SETUP ================= */
+        :root {
+            --bg-pure: #ffffff;
+            --sky-blue: #e0f2fe; /* Xanh nhạt */
+            --text-dark: #334155;
+            --leaf-green: #86efac;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--sky-blue);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            /* Hiệu ứng nắng chói nhẹ ở nền */
+            background-image: radial-gradient(circle at 50% 0%, #fff 0%, var(--sky-blue) 70%);
+            background-attachment: fixed;
+        }
+
+        h1, h2, .handwriting {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* ================= 2. GATEKEEPER (CỔNG BẢO MẬT) ================= */
+        #gatekeeper {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999;
+            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease, filter 1s ease;
+        }
+
+        .quiz-card {
+            background: #fff; padding: 40px; border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            text-align: center; max-width: 90%; width: 400px;
+        }
+
+        .quiz-card img {
+            width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 20px;
+            border: 4px solid var(--sky-blue);
+        }
+
+        .quiz-card h2 { font-size: 2rem; color: #0284c7; margin-bottom: 20px; }
+        
+        .btn-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+        }
+
+        .quiz-btn {
+            padding: 12px; border: 2px solid var(--sky-blue); background: #fff;
+            border-radius: 10px; font-family: inherit; font-weight: 600; cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-btn:hover { background: var(--sky-blue); color: #0369a1; }
+        
+        .error-msg {
+            color: #ef4444; margin-top: 15px; font-size: 0.9rem; opacity: 0; transition: opacity 0.3s;
+        }
+
+        /* ================= 3. HERO BANNER & AUDIO UI ================= */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; position: relative;
+        }
+
+        .hero h1 {
+            font-size: 5rem; color: #0284c7; text-shadow: 2px 2px 10px rgba(255,255,255,0.8);
+            transform: translateY(30px); opacity: 0;
+            transition: all 1.5s ease 0.5s; /* Hiện ra sau khi cổng bảo mật mở */
+        }
+        .hero p {
+            font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; color: #64748b;
+            transform: translateY(20px); opacity: 0;
+            transition: all 1.5s ease 0.8s;
+        }
+
+        /* Khi thẻ body được cấp class 'unlocked', hero sẽ hiện ra */
+        body.unlocked .hero h1, body.unlocked .hero p {
+            transform: translateY(0); opacity: 1;
+        }
+
+        /* Trình phát nhạc */
+        #music-player {
+            position: fixed; bottom: 20px; left: 20px;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(5px);
+            padding: 10px 20px; border-radius: 30px;
+            display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            z-index: 100; opacity: 0; pointer-events: none;
+            transition: opacity 1s ease 1s;
+        }
+
+        body.unlocked #music-player { opacity: 1; pointer-events: auto; }
+
+        .disk {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: conic-gradient(#333, #666, #333, #666, #333);
+            animation: spin 3s linear infinite; animation-play-state: paused;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .track-info { font-size: 0.85rem; font-weight: 600; width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .controls i { cursor: pointer; color: #0284c7; font-size: 1.2rem; margin: 0 5px; transition: transform 0.2s; }
+        .controls i:hover { transform: scale(1.2); }
+
+    </style>
 </head>
 <body>
 
-    <!-- Trình phát nhạc ẩn (Tự động kích hoạt khi tương tác) -->
-    <div id="audio-ui">
-        <div class="vinyl-record" id="vinyl"></div>
-        <p>Đang phát: <span>Tháng năm rực rỡ</span></p>
-    </div>
-    <audio id="bg-music" loop>
+    <audio id="bg-audio">
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Canvas cho hiệu ứng Gió thổi & Thời gian trôi -->
-    <canvas id="wind-canvas"></canvas>
-
-    <div class="main-container">
-        <!-- CHƯƠNG 1: CUỐN SÁCH KÝ ỨC -->
-        <section class="scene" id="scene-book">
-            <div class="book-container">
-                <div class="page left-page">
-                    <h1 class="title">Chương 1: Những Khởi Đầu</h1>
-                    <p class="story-text">Mọi thứ bắt đầu từ những ngày khoác màu áo xanh tình nguyện. Những buổi dọn dẹp cảnh quan, mồ hôi ướt đẫm khi xúc từng xe đất, gom từng nhành cây. Chúng ta bước vào đời nhau từ những công việc nhọc nhằn mà rộn rã tiếng cười ấy.</p>
-                </div>
-                <div class="page right-page">
-                    <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=800" alt="Tình nguyện">
-                </div>
+    <div id="gatekeeper">
+        <div class="quiz-card">
+            <img src="https://images.unsplash.com/photo-1529156069898-49953eb1b5b4?w=400&q=80" alt="Group">
+            <h2>Ký hiệu bí mật của nhóm là gì?</h2>
+            <div class="btn-grid">
+                <button class="quiz-btn" onclick="checkAnswer(false)">A. Trà sữa full topping</button>
+                <button class="quiz-btn" onclick="checkAnswer(false)">B. Chạy Deadline</button>
+                <button class="quiz-btn" onclick="checkAnswer(true)">C. Thanh Xuân (Đúng)</button>
+                <button class="quiz-btn" onclick="checkAnswer(false)">D. Ngủ nướng</button>
             </div>
-        </section>
-
-        <!-- CHƯƠNG 2: THƯỚC PHIM ĐIỆN ẢNH (Ảnh & Video xen kẽ) -->
-        <section class="scene" id="scene-film">
-            <div class="film-strip">
-                <div class="film-frame text-frame">
-                    <h2>Chương 2: Dưới Ống Kính</h2>
-                    <p>Những tờ mờ sáng đón bình minh nơi con đường quê, những dải đồi mờ sương và thảm cỏ xanh mướt. Hay cả chặng đường 10km đồng hành... tất cả được thu gọn lại đây.</p>
-                </div>
-                <!-- Khung Video (Dùng ảnh GIF giả lập hoặc iframe) -->
-                <div class="film-frame video-frame">
-                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&mute=1&controls=0" frameborder="0"></iframe>
-                </div>
-                <div class="film-frame img-frame">
-                    <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=800" alt="Bình minh">
-                </div>
-                <div class="film-frame text-frame">
-                    <p>Và không thể thiếu những đêm muộn kiệt sức, tự thưởng cho nhau những bát ramen nghi ngút khói, đĩa sashimi cá hồi hay bánh xèo ngập sốt mayonnaise.</p>
-                </div>
-                <div class="film-frame img-frame">
-                    <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800" alt="Sashimi">
-                </div>
-            </div>
-        </section>
-
-        <!-- CHƯƠNG 3: THỜI GIAN TRÔI & LỜI KẾT -->
-        <section class="scene" id="scene-time">
-            <div class="time-content">
-                <h2 class="fade-text">Thời gian cứ thế trôi...</h2>
-                <p class="fade-text delay-1">Giống như những cơn gió thổi qua giảng đường.</p>
-                <p class="fade-text delay-2">Dù sau này mỗi người một hướng, chỉ cần áp điện thoại vào chiếc móc khóa này...</p>
-                <h1 class="fade-text final-glow">Ký ức sẽ luôn ở đây.</h1>
-            </div>
-        </section>
+            <p class="error-msg" id="error-msg">Sai rồi, thử nhớ lại xem!</p>
+        </div>
     </div>
 
-    <!-- Thư viện lõi GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="script.js"></script>
+    <section class="hero">
+        <h1>Tháng Năm Rực Rỡ</h1>
+        <p>Gửi lại nụ cười ở góc sân trường</p>
+    </section>
+
+    <div id="music-player">
+        <div class="disk" id="disk"></div>
+        <div class="track-info">Thanh Xuân - Da LAB</div>
+        <div class="controls">
+            <i class="fas fa-play" id="play-btn" onclick="togglePlay()"></i>
+            <i class="fas fa-step-forward" onclick="nextTrack()"></i>
+        </div>
+    </div>
+
+    <script>
+        const gatekeeper = document.getElementById('gatekeeper');
+        const audio = document.getElementById('bg-audio');
+        const disk = document.getElementById('disk');
+        const playBtn = document.getElementById('play-btn');
+        let isPlaying = false;
+
+        // Xử lý mở cổng và kích hoạt âm thanh
+        function checkAnswer(isCorrect) {
+            if(isCorrect) {
+                // 1. Ẩn thông báo lỗi (nếu có)
+                document.getElementById('error-msg').style.opacity = '0';
+                
+                // 2. Kích hoạt hiệu ứng "Bay sâu vào ký ức"
+                gatekeeper.style.transform = 'scale(1.5)'; // Phóng to
+                gatekeeper.style.filter = 'blur(10px)';    // Làm mờ
+                gatekeeper.style.opacity = '0';            // Biến mất
+                gatekeeper.style.pointerEvents = 'none';
+                
+                // 3. Thông báo cho phần còn lại của web bắt đầu hoạt động
+                document.body.classList.add('unlocked');
+                
+                // 4. Kích hoạt nhạc (Quy định bắt buộc: Nhạc chỉ được bật khi người dùng đã click)
+                togglePlay();
+                
+            } else {
+                document.getElementById('error-msg').style.opacity = '1';
+                // Tạo hiệu ứng rung lắc nhẹ khi sai
+                const card = document.querySelector('.quiz-card');
+                card.animate([
+                    { transform: 'translateX(0px)' },
+                    { transform: 'translateX(-10px)' },
+                    { transform: 'translateX(10px)' },
+                    { transform: 'translateX(0px)' }
+                ], { duration: 300 });
+            }
+        }
+
+        // Quản lý phát nhạc
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+                disk.style.animationPlayState = 'running';
+                playBtn.classList.replace('fa-play', 'fa-pause');
+                isPlaying = true;
+            } else {
+                audio.pause();
+                disk.style.animationPlayState = 'paused';
+                playBtn.classList.replace('fa-pause', 'fa-play');
+                isPlaying = false;
+            }
+        }
+
+        function nextTrack() {
+            // Demo chuyển bài: Tạm thời reset lại bài hiện tại để mô phỏng
+            audio.currentTime = 0;
+            if(!isPlaying) togglePlay();
+        }
+    </script>
 </body>
 </html>
