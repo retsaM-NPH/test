@@ -1,110 +1,87 @@
-gsap.registerPlugin(ScrollTrigger);
-
-// 1. KÍCH HOẠT ÂM NHẠC & UI (Buộc người dùng tương tác lần đầu để chạy)
-const audio = document.getElementById('bg-music');
-const audioUI = document.getElementById('audio-ui');
-const vinyl = document.getElementById('vinyl');
+// --- 1. LOGIC GATEKEEPER & AUDIO ---
+const gatekeeper = document.getElementById('gatekeeper');
+const audio = document.getElementById('bg-audio');
+const disk = document.getElementById('disk');
+const playBtn = document.getElementById('play-btn');
 let isPlaying = false;
 
-document.body.addEventListener('click', () => {
-    if (!isPlaying) {
-        audio.play();
-        isPlaying = true;
-        audioUI.style.opacity = 1;
-        vinyl.style.animationPlayState = 'running';
-    }
-}, { once: true });
-
-// 2. HIỆU ỨNG CHUYỂN CẢNH (GSAP TIMELINE)
-// Cuộn ngang thư viện phim (Chương 2)
-const filmStrip = document.querySelector('.film-strip');
-gsap.to(filmStrip, {
-    x: () => -(filmStrip.scrollWidth - window.innerWidth),
-    ease: "none",
-    scrollTrigger: {
-        trigger: "#scene-film",
-        pin: true,
-        scrub: 1,
-        end: () => "+=" + filmStrip.scrollWidth
-    }
-});
-
-// Chữ hiện ra từ từ ở hồi kết (Chương 3)
-const fadeTexts = gsap.utils.toArray('.fade-text');
-fadeTexts.forEach((text, i) => {
-    gsap.to(text, {
-        scrollTrigger: {
-            trigger: "#scene-time",
-            start: "top 50%", // Khi chương 3 vào giữa màn hình
-            onEnter: () => startWindEffect() // Kích hoạt gió thổi
-        },
-        opacity: 1,
-        y: 0,
-        duration: 1.5,
-        delay: i * 0.8, // Các câu xuất hiện nối tiếp nhau
-        ease: "power2.out"
-    });
-});
-
-// 3. ĐỘNG CƠ VẬT LÝ CHO GIÓ THỔI & THỜI GIAN TRÔI (CANVAS API)
-const canvas = document.getElementById('wind-canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles = [];
-let windActive = false;
-
-class WindParticle {
-    constructor() {
-        this.x = -50; // Bắt đầu từ rìa trái
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = Math.random() * 3 + 2; // Tốc độ gió ngang
-        this.speedY = (Math.random() - 0.5) * 2; // Chuyển động lượn sóng
-        this.opacity = Math.random() * 0.5 + 0.3;
-    }
-    update() {
-        this.x += this.speedX;
-        // Quỹ đạo hình sin tạo cảm giác gió cuốn lá rơi
-        this.y += Math.sin(this.x / 50) * 1 + this.speedY; 
+function checkAnswer(isCorrect) {
+    if(isCorrect) {
+        document.getElementById('error-msg').style.opacity = '0';
+        gatekeeper.style.transform = 'scale(1.5)';
+        gatekeeper.style.filter = 'blur(10px)';
+        gatekeeper.style.opacity = '0';
+        gatekeeper.style.pointerEvents = 'none';
         
-        // Vẽ hạt
-        ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
+        document.body.classList.add('unlocked');
+        togglePlay();
+    } else {
+        document.getElementById('error-msg').style.opacity = '1';
+        document.querySelector('.quiz-card').animate([
+            { transform: 'translateX(0px)' }, { transform: 'translateX(-10px)' },
+            { transform: 'translateX(10px)' }, { transform: 'translateX(0px)' }
+        ], { duration: 300 });
     }
 }
 
-function startWindEffect() {
-    if (windActive) return;
-    windActive = true;
-    canvas.style.opacity = 1; // Hiện lớp Canvas lên
-    
-    // Liên tục sinh ra hạt mới
-    setInterval(() => {
-        if (particles.length < 100) particles.push(new WindParticle());
-    }, 100);
-    
-    animateWind();
-}
-
-function animateWind() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < particles.length; i++) {
-        particles[i].update();
-        // Xóa hạt nếu bay khỏi màn hình bên phải
-        if (particles[i].x > canvas.width + 50) {
-            particles.splice(i, 1);
-            i--;
-        }
+function togglePlay() {
+    if (audio.paused) {
+        audio.play(); disk.style.animationPlayState = 'running';
+        playBtn.classList.replace('fa-play', 'fa-pause'); isPlaying = true;
+    } else {
+        audio.pause(); disk.style.animationPlayState = 'paused';
+        playBtn.classList.replace('fa-pause', 'fa-play'); isPlaying = false;
     }
-    requestAnimationFrame(animateWind);
 }
 
-// Cập nhật lại Canvas khi xoay màn hình
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+function nextTrack() { 
+    audio.currentTime = 0; 
+    if(!isPlaying) togglePlay(); 
+}
+
+// --- 2. LOGIC BOTTOM SHEET (THÀNH VIÊN) ---
+function openMember(name, desc, imgSrc) {
+    document.getElementById('sheet-name').innerText = name;
+    document.getElementById('sheet-desc').innerText = desc;
+    document.getElementById('sheet-img').src = imgSrc;
+    document.body.classList.add('sheet-open');
+}
+
+function closeMember() {
+    document.body.classList.remove('sheet-open');
+}
+
+// --- 3. KHỞI TẠO DOM CHO SÁCH 3D & OBSERVER API ---
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Cấu hình Sách lật 3D (StPageFlip)
+    const flipbookElement = document.getElementById('flipbook');
+    if(flipbookElement) {
+        const pageFlip = new St.PageFlip(flipbookElement, {
+            width: 400,
+            height: 550,
+            size: "stretch",
+            minWidth: 315,
+            maxWidth: 1000,
+            minHeight: 420,
+            maxHeight: 1350,
+            maxShadowOpacity: 0.5,
+            showCover: true,
+            mobileScrollSupport: false
+        });
+        pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+    }
+
+    // Cấu hình hệ thống theo dõi cuộn trang (Intersection Observer)
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.15 }); 
+
+    document.querySelectorAll('.observer-item').forEach((el) => {
+        observer.observe(el);
+    });
 });
