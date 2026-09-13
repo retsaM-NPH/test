@@ -1,221 +1,227 @@
+/**
+ * THANH XUÂN VƯỜN TRƯỜNG - KỶ NIỆM 2026
+ * Core Engine & Interactive Physics
+ */
+'use strict'; // Kích hoạt chế độ kiểm tra lỗi nghiêm ngặt của JS
+
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     /* =========================================================
-       1. HỆ THỐNG DATA & AUDIO PLAYER (Danh sách nhạc ngẫu nhiên)
+       1. HỆ THỐNG ÂM NHẠC (Playlist & Audio Player)
     ========================================================= */
     const playlist = [
-        { name: "Thanh Xuân - Da LAB", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-        { name: "Tình Bạn Diệu Kỳ", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-        { name: "Tháng Năm Rực Rỡ", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+        { title: "Thanh Xuân - Da LAB", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+        { title: "Tình Bạn Diệu Kỳ", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+        { title: "Tháng Năm Rực Rỡ", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
     ];
-    let currentSongIndex = 0;
+    let currentTrackIndex = 0;
     
-    const audio = document.getElementById('bg-audio');
-    const disk = document.getElementById('disk');
-    const playBtn = document.getElementById('play-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const prevBtn = document.getElementById('prev-btn');
-    const songNameDisplay = document.getElementById('current-song-name');
-    let isPlaying = false;
+    const audioEl = document.getElementById('bg-audio');
+    const trackTitleEl = document.getElementById('track-title');
+    const btnPlay = document.getElementById('btn-play');
+    const vinylDisk = document.querySelector('.vinyl-disk');
+    
+    // Khởi tạo bài hát đầu tiên vào bộ nhớ tạm
+    const loadTrack = (index) => {
+        audioEl.src = playlist[index].src;
+        trackTitleEl.textContent = playlist[index].title;
+    };
+    loadTrack(currentTrackIndex);
 
-    function loadSong(index) {
-        audio.src = playlist[index].src;
-        songNameDisplay.innerText = playlist[index].name;
-    }
-
-    function togglePlay() {
-        if (audio.paused) {
-            audio.play();
-            disk.style.animationPlayState = 'running';
-            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            isPlaying = true;
+    const togglePlay = () => {
+        if (audioEl.paused) {
+            audioEl.play().catch(e => console.warn("Trình duyệt chặn Audio:", e));
+            vinylDisk.style.animationPlayState = 'running';
+            btnPlay.innerHTML = '<i class="fas fa-pause"></i>';
         } else {
-            audio.pause();
-            disk.style.animationPlayState = 'paused';
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            isPlaying = false;
+            audioEl.pause();
+            vinylDisk.style.animationPlayState = 'paused';
+            btnPlay.innerHTML = '<i class="fas fa-play"></i>';
         }
-    }
+    };
 
-    playBtn.addEventListener('click', togglePlay);
-    
-    nextBtn.addEventListener('click', () => {
-        currentSongIndex = (currentSongIndex + 1) % playlist.length;
-        loadSong(currentSongIndex);
-        if(isPlaying) audio.play();
+    const nextTrack = () => {
+        currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+        loadTrack(currentTrackIndex);
+        if (!audioEl.paused) audioEl.play();
+    };
+
+    // Điều khiển Audio qua Event Delegation (Gắn 1 lần vào thanh Nav)
+    const audioController = document.querySelector('.music-controller');
+    audioController.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        
+        if (btn.id === 'btn-play') togglePlay();
+        if (btn.id === 'btn-next') nextTrack();
+        if (btn.id === 'btn-prev') {
+            currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+            loadTrack(currentTrackIndex);
+            if (!audioEl.paused) audioEl.play();
+        }
     });
 
-    prevBtn.addEventListener('click', () => {
-        currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
-        loadSong(currentSongIndex);
-        if(isPlaying) audio.play();
-    });
-
-    // Tự động qua bài
-    audio.addEventListener('ended', () => {
-        nextBtn.click();
-    });
+    audioEl.addEventListener('ended', nextTrack); // Tự động qua bài
 
     /* =========================================================
-       2. GATEKEEPER (Cổng bảo mật & Kích hoạt trải nghiệm)
+       2. BỘ PHÁT SINH MÔI TRƯỜNG VẬT LÝ (Procedural Environment)
+    ========================================================= */
+    const generateEnvironment = () => {
+        // Dùng DocumentFragment để chống Reflow màn hình (Cực kỳ tối ưu)
+        const fragmentSunbeams = document.createDocumentFragment();
+        const fragmentLeaves = document.createDocumentFragment();
+
+        // Bơm 5 tia nắng ngẫu nhiên
+        for (let i = 0; i < 5; i++) {
+            const beam = document.createElement('div');
+            beam.className = 'sunbeam';
+            beam.style.left = `${Math.random() * 100}vw`;
+            beam.style.width = `${Math.random() * 80 + 40}px`;
+            beam.style.height = `${Math.random() * 50 + 50}vh`;
+            beam.style.animationDuration = `${Math.random() * 6 + 10}s`;
+            beam.style.animationDelay = `${Math.random() * 3}s`;
+            fragmentSunbeams.appendChild(beam);
+        }
+
+        // Bơm 30 chiếc lá rơi ngẫu nhiên
+        for (let i = 0; i < 30; i++) {
+            const leaf = document.createElement('div');
+            leaf.className = 'leaf';
+            leaf.style.left = `${Math.random() * 100}vw`;
+            leaf.style.animationDuration = `${Math.random() * 5 + 7}s, ${Math.random() * 2 + 2}s`; 
+            leaf.style.animationDelay = `${Math.random() * 5}s, 0s`;
+            leaf.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+            fragmentLeaves.appendChild(leaf);
+        }
+
+        document.getElementById('sunbeams-container').appendChild(fragmentSunbeams);
+        document.getElementById('falling-leaves-container').appendChild(fragmentLeaves);
+    };
+
+    /* =========================================================
+       3. CỔNG BẢO MẬT & MỞ KHÓA TRẢI NGHIỆM (Gatekeeper)
     ========================================================= */
     const gatekeeper = document.getElementById('gatekeeper');
-    const quizBtns = document.querySelectorAll('.quiz-btn');
-    const errorMsg = document.getElementById('error-msg');
+    const quizError = document.getElementById('quiz-error');
 
-    quizBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const isCorrect = this.getAttribute('data-correct') === 'true';
+    gatekeeper.addEventListener('click', (e) => {
+        const btn = e.target.closest('.quiz-btn');
+        if (!btn) return; // Nếu bấm ra ngoài nút thì bỏ qua
+
+        const isCorrect = btn.getAttribute('data-correct') === 'true';
+
+        if (isCorrect) {
+            // Hiệu ứng mở khóa thành công
+            quizError.classList.remove('show');
+            gatekeeper.classList.add('unlocked-fade'); // Kích hoạt CSS chuyển cảnh mờ dần
+            document.body.classList.add('unlocked');   // Mở khóa cuộn dọc
             
-            if (isCorrect) {
-                // Mở khóa đúng
-                errorMsg.classList.remove('show');
-                document.body.classList.add('unlocked');
-                
-                // Mở bài hát đầu tiên
-                loadSong(0);
-                togglePlay();
-                
-                // Sinh hiệu ứng môi trường
-                generateEnvironment();
+            // Kích hoạt hệ sinh thái
+            togglePlay();
+            generateEnvironment();
+            initScrollEngines(); // Đánh thức GSAP & Flipbook
 
-            } else {
-                // Sai đáp án
-                errorMsg.classList.add('show');
-                const card = document.querySelector('.quiz-card');
-                // Hiệu ứng rung lắc (CSS Web Animations API - Tối ưu hơn CSS thuần)
-                card.animate([
-                    { transform: 'translateX(0px)' },
-                    { transform: 'translateX(-10px)' },
-                    { transform: 'translateX(10px)' },
-                    { transform: 'translateX(0px)' }
-                ], { duration: 300, easing: 'ease-in-out' });
-            }
-        });
+            // Xóa hộp thoại khỏi DOM sau khi mờ hẳn (Giải phóng RAM)
+            setTimeout(() => gatekeeper.remove(), 1500);
+
+        } else {
+            // Hiệu ứng sai
+            quizError.classList.add('show');
+            const wrapper = gatekeeper.querySelector('.quiz-wrapper');
+            // Dùng Web Animations API mượt hơn CSS Keyframes
+            wrapper.animate([
+                { transform: 'translateX(0px)' },
+                { transform: 'translateX(-12px)' },
+                { transform: 'translateX(12px)' },
+                { transform: 'translateX(0px)' }
+            ], { duration: 400, easing: 'cubic-bezier(.36,-0.04,.15,1.64)' });
+        }
     });
 
     /* =========================================================
-       3. ENVIRONMENT GENERATOR (Tạo Lá rơi & Tia nắng)
+       4. TƯƠNG TÁC THÀNH VIÊN (Micro-interactions)
     ========================================================= */
-    function generateEnvironment() {
-        // Tạo 5 tia nắng
-        const sunbeamsContainer = document.getElementById('sunbeams-container');
-        for (let i = 0; i < 5; i++) {
-            let beam = document.createElement('div');
-            beam.classList.add('sunbeam');
-            // Random kích thước, vị trí và tốc độ
-            beam.style.left = `${Math.random() * 100}vw`;
-            beam.style.width = `${Math.random() * 100 + 50}px`;
-            beam.style.height = `${Math.random() * 50 + 50}vh`;
-            beam.style.animationDuration = `${Math.random() * 5 + 8}s`;
-            beam.style.animationDelay = `${Math.random() * 2}s`;
-            sunbeamsContainer.appendChild(beam);
-        }
+    // Dùng Event Delegation (Chỉ gắn 1 Listener cho cả 100 thành viên)
+    const membersSection = document.querySelector('.section-members');
+    
+    membersSection.addEventListener('click', (e) => {
+        const actionBtn = e.target.closest('.action-btn');
+        if (!actionBtn) return;
 
-        // Tạo 30 chiếc lá rơi
-        const leavesContainer = document.getElementById('falling-leaves-container');
-        for (let i = 0; i < 30; i++) {
-            let leaf = document.createElement('div');
-            leaf.classList.add('leaf');
-            leaf.style.left = `${Math.random() * 100}vw`;
-            leaf.style.animationDuration = `${Math.random() * 5 + 6}s, ${Math.random() * 2 + 2}s`; 
-            leaf.style.animationDelay = `${Math.random() * 5}s, 0s`;
+        const countSpan = actionBtn.querySelector('.count');
+        let currentVal = parseInt(countSpan.textContent);
+
+        if (actionBtn.classList.contains('active')) {
+            actionBtn.classList.remove('active');
+            countSpan.textContent = currentVal - 1;
+        } else {
+            actionBtn.classList.add('active');
+            countSpan.textContent = currentVal + 1;
             
-            // Random kích thước lá
-            let scale = Math.random() * 0.5 + 0.5;
-            leaf.style.transform = `scale(${scale})`;
-            leavesContainer.appendChild(leaf);
+            // Hiệu ứng hạt nảy (Pop)
+            actionBtn.animate([
+                { transform: 'scale(1)' },
+                { transform: 'scale(1.2)' },
+                { transform: 'scale(1)' }
+            ], { duration: 300, easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' });
         }
-    }
+    });
 
     /* =========================================================
-       4. SÁCH KỶ NIỆM 3D (StPageFlip Initialization)
+       5. ĐỘNG CƠ GSAP & FLIPBOOK (Chỉ khởi động khi đã mở khóa)
     ========================================================= */
-    const flipbookEl = document.getElementById('flipbook');
-    if (flipbookEl) {
-        const pageFlip = new St.PageFlip(flipbookEl, {
-            width: 450, 
-            height: 600,
-            size: "stretch",
-            minWidth: 315,
-            maxWidth: 1000,
-            minHeight: 420,
-            maxHeight: 1350,
-            maxShadowOpacity: 0.3,
-            showCover: true,
-            mobileScrollSupport: false,
-            usePortrait: true // Cho phép hiển thị trang đơn trên Mobile
-        });
+    function initScrollEngines() {
         
-        pageFlip.loadFromHTML(document.querySelectorAll('.page'));
-    }
+        // --- A. FLIPBOOK ENGINE ---
+        const flipbookEl = document.getElementById('flipbook-engine');
+        if (flipbookEl) {
+            const pageFlip = new St.PageFlip(flipbookEl, {
+                width: 480, height: 650, // Tỷ lệ chuẩn sách
+                size: "stretch", minWidth: 315, maxWidth: 1000, minHeight: 420, maxHeight: 1350,
+                maxShadowOpacity: 0.4, showCover: true, mobileScrollSupport: false,
+                usePortrait: true // Cho phép hiển thị 1 trang trên điện thoại dọc
+            });
+            pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+        }
 
-    /* =========================================================
-       5. SVG SCROLL ANIMATION (Vẽ cành cây theo nhịp cuộn)
-    ========================================================= */
-    const branchPath = document.querySelector('.branch-path');
-    
-    if (branchPath) {
-        // CSS set dasharray = 2000. Ta bắt đầu với dashoffset = 2000 (Ẩn hoàn toàn)
-        const pathLength = 2000; 
-        branchPath.style.strokeDashoffset = pathLength;
+        // --- B. GSAP PARALLAX (Bối cảnh 3D) ---
+        gsap.registerPlugin(ScrollTrigger);
 
-        let ticking = false;
-
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    // Tính toán % cuộn trang hiện tại so với khối Timeline
-                    const timelineSection = document.querySelector('.section-timeline');
-                    const rect = timelineSection.getBoundingClientRect();
-                    
-                    // Khoảng cách từ đỉnh viewport đến đỉnh section
-                    const scrollPosition = window.innerHeight - rect.top;
-                    const totalHeight = rect.height + window.innerHeight;
-                    
-                    let scrollPercentage = scrollPosition / totalHeight;
-                    
-                    // Giới hạn giá trị từ 0 đến 1
-                    if (scrollPercentage < 0) scrollPercentage = 0;
-                    if (scrollPercentage > 1) scrollPercentage = 1;
-                    
-                    // Vẽ SVG dần dần
-                    const drawLength = pathLength * scrollPercentage;
-                    branchPath.style.strokeDashoffset = pathLength - drawLength;
-                    
-                    ticking = false;
-                });
-                ticking = true;
-            }
+        // Cuộn lớp nền chậm lại
+        gsap.to('.parallax-bg', {
+            yPercent: 20, ease: "none",
+            scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: true }
         });
-    }
 
-    /* =========================================================
-       6. HỆ THỐNG TƯƠNG TÁC (Thả tim & Cảm xúc)
-    ========================================================= */
-    const reactBtns = document.querySelectorAll('.react-btn');
-    
-    reactBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const counterSpan = this.querySelector('.counter');
-            let currentCount = parseInt(counterSpan.innerText);
+        // Cuộn lớp hoa lá phía trước nhanh hơn & hơi xoay
+        gsap.to('.parallax-fore', {
+            yPercent: -25, rotation: -8, ease: "none",
+            scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: true }
+        });
+
+        // --- C. GSAP TIMELINE SVG DRAW (Vẽ cành cây) ---
+        const branchPath = document.querySelector('.branch-path');
+        if (branchPath) {
+            // Tự động đo độ dài thực tế của nét vẽ SVG
+            const pathLength = branchPath.getTotalLength();
             
-            // Toggle trạng thái active
-            if (this.classList.contains('active')) {
-                this.classList.remove('active');
-                counterSpan.innerText = currentCount - 1;
-            } else {
-                this.classList.add('active');
-                counterSpan.innerText = currentCount + 1;
-                
-                // Hiệu ứng hạt nảy lên khi bấm (Micro-interaction)
-                this.animate([
-                    { transform: 'scale(1)' },
-                    { transform: 'scale(1.2)' },
-                    { transform: 'scale(1)' }
-                ], { duration: 300 });
-            }
-        });
-    });
+            // Khởi tạo trạng thái ban đầu: Giấu nét vẽ đi
+            gsap.set(branchPath, { 
+                strokeDasharray: pathLength, 
+                strokeDashoffset: pathLength 
+            });
 
+            // Gắn hoạt ảnh nét vẽ đồng bộ với thao tác cuộn màn hình
+            gsap.to(branchPath, {
+                strokeDashoffset: 0, // Vẽ đến đâu hiện đến đó
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".section-timeline", // Bắt đầu vẽ khi thấy khối Timeline
+                    start: "top 60%", // Kích hoạt khi khối lên đến 60% màn hình
+                    end: "bottom 80%", // Kết thúc vẽ khi xuống cuối khối
+                    scrub: 1 // Tạo độ trễ mượt 1 giây khi vuốt (Cinematic effect)
+                }
+            });
+        }
+    }
 });
