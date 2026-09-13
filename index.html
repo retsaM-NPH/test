@@ -8,115 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <style>
-        /* ================= 1. GLOBAL SETUP ================= */
-        :root {
-            --sky-blue: #e0f2fe; 
-            --text-dark: #334155;
-            --paper-color: #fdfbf7; /* Màu giấy hơi ngà */
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Quicksand', sans-serif;
-            background-color: var(--sky-blue);
-            color: var(--text-dark);
-            overflow: hidden; /* Khóa cuộn khi chưa giải đố */
-            background-image: radial-gradient(circle at 50% 0%, #fff 0%, var(--sky-blue) 70%);
-            background-attachment: fixed;
-        }
-
-        /* Mở khóa cuộn sau khi qua Gatekeeper */
-        body.unlocked { overflow-y: auto; overflow-x: hidden; }
-
-        h1, h2, .handwriting { font-family: 'Dancing Script', cursive; }
-
-        /* ================= 2. GATEKEEPER ================= */
-        #gatekeeper {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999; transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease, filter 1s ease;
-        }
-
-        .quiz-card {
-            background: #fff; padding: 40px; border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08); text-align: center; width: 90%; max-width: 400px;
-        }
-
-        .quiz-card img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 4px solid var(--sky-blue); }
-        .quiz-card h2 { font-size: 2rem; color: #0284c7; margin-bottom: 20px; }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .quiz-btn { padding: 12px; border: 2px solid var(--sky-blue); background: #fff; border-radius: 10px; font-family: inherit; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .quiz-btn:hover { background: var(--sky-blue); color: #0369a1; }
-        .error-msg { color: #ef4444; margin-top: 15px; font-size: 0.9rem; opacity: 0; transition: opacity 0.3s; }
-
-        /* ================= 3. HERO BANNER ================= */
-        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; }
-        .hero h1 { font-size: 5rem; color: #0284c7; text-shadow: 2px 2px 10px rgba(255,255,255,0.8); transform: translateY(30px); opacity: 0; transition: all 1.5s ease 0.5s; text-align: center;}
-        .hero p { font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; color: #64748b; transform: translateY(20px); opacity: 0; transition: all 1.5s ease 0.8s; text-align: center; margin-top: 10px;}
-        body.unlocked .hero h1, body.unlocked .hero p { transform: translateY(0); opacity: 1; }
-
-        /* Mũi tên hướng dẫn cuộn xuống */
-        .scroll-down { position: absolute; bottom: 40px; font-size: 2rem; color: #0284c7; animation: bounce 2s infinite; opacity: 0; transition: opacity 1.5s ease 1.5s; }
-        body.unlocked .scroll-down { opacity: 0.6; }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-15px); } 60% { transform: translateY(-7px); } }
-
-        /* ================= 4. AUDIO UI ================= */
-        #music-player {
-            position: fixed; bottom: 20px; left: 20px; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px);
-            padding: 10px 20px; border-radius: 30px; display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 1s ease 1s;
-        }
-        body.unlocked #music-player { opacity: 1; pointer-events: auto; }
-        .disk { width: 30px; height: 30px; border-radius: 50%; background: conic-gradient(#333, #666, #333, #666, #333); animation: spin 3s linear infinite; animation-play-state: paused; }
-        .track-info { font-size: 0.85rem; font-weight: 600; width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .controls i { cursor: pointer; color: #0284c7; font-size: 1.2rem; margin: 0 5px; transition: transform 0.2s; }
-
-        /* ================= 5. SÁCH KỶ NIỆM 3D ================= */
-        .section-book {
-            min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 0;
-        }
-        
-        .section-title { font-size: 3rem; color: #0284c7; margin-bottom: 40px; text-shadow: 1px 1px 5px rgba(255,255,255,0.8); }
-
-        .book-wrapper {
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            /* Tạo hiệu ứng bóng đổ cho toàn bộ cuốn sách */
-        }
-
-        .flip-book { width: 100%; height: 100%; }
-        
-        /* Cấu hình chung cho một trang giấy */
-        .page {
-            background-color: var(--paper-color);
-            color: #444; border: solid 1px #e5e5e5; overflow: hidden;
-            /* Tạo texture giấy nhám nhẹ bằng Gradient */
-            background-image: repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(0,0,0,0.02) 20px, rgba(0,0,0,0.02) 21px);
-        }
-
-        .page-content { padding: 30px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; }
-        
-        /* Bìa sách */
-        .page-cover { background-color: #0284c7; color: #fff; border: 2px solid #0369a1; }
-        .page-cover h2 { font-size: 2.5rem; text-align: center; }
-        .page-cover p { text-align: center; margin-top: 10px; font-weight: 600; }
-
-        /* Chữ viết tay trên trang */
-        .text-page { padding-right: 20px; }
-        .text-page h3 { font-size: 2.5rem; color: #0369a1; margin-bottom: 20px; line-height: 1.2; }
-        .text-page p { font-size: 1.5rem; line-height: 1.8; color: #333; text-align: justify; }
-
-        /* Khung ảnh Polaroid */
-        .polaroid-page { display: flex; justify-content: center; align-items: center; }
-        .polaroid {
-            background: #fff; padding: 10px 10px 25px 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); transform: rotate(-2deg);
-        }
-        .polaroid img { width: 100%; height: auto; max-height: 60%; object-fit: cover; }
-        .polaroid .caption { text-align: center; font-size: 1.5rem; margin-top: 15px; color: #333; }
-
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -129,9 +21,9 @@
             <img src="https://images.unsplash.com/photo-1529156069898-49953eb1b5b4?w=400&q=80" alt="Group">
             <h2>Ký hiệu bí mật của nhóm là gì?</h2>
             <div class="btn-grid">
-                <button class="quiz-btn" onclick="checkAnswer(false)">A. Trà sữa full topping</button>
-                <button class="quiz-btn" onclick="checkAnswer(false)">B. Chạy Deadline</button>
-                <button class="quiz-btn" onclick="checkAnswer(true)">C. Thanh Xuân (Đúng)</button>
+                <button class="quiz-btn" onclick="checkAnswer(false)">A. Trà sữa</button>
+                <button class="quiz-btn" onclick="checkAnswer(false)">B. Deadline</button>
+                <button class="quiz-btn" onclick="checkAnswer(true)">C. Thanh Xuân</button>
                 <button class="quiz-btn" onclick="checkAnswer(false)">D. Ngủ nướng</button>
             </div>
             <p class="error-msg" id="error-msg">Sai rồi, thử nhớ lại xem!</p>
@@ -155,109 +47,78 @@
 
     <section class="section-book">
         <h2 class="section-title">Nhật Ký Thanh Xuân</h2>
-        
         <div class="book-wrapper">
             <div id="flipbook" class="flip-book">
-                
                 <div class="page page-cover">
                     <div class="page-content">
                         <h2>Album Ký Ức</h2>
                         <p>Lật mở để bắt đầu</p>
                     </div>
                 </div>
-
                 <div class="page">
                     <div class="page-content text-page">
-                        <h3 class="handwriting">Chuyến đi Đà Lạt tháng 6</h3>
-                        <p class="handwriting">Năm đó, chúng ta chẳng có gì ngoài thời gian và những nụ cười không biết mệt. Bát mì tôm úp vội ban đêm sương lạnh mà ngon hơn bất kỳ sơn hào hải vị nào...</p>
+                        <h3 class="handwriting">Chuyến đi Đà Lạt</h3>
+                        <p class="handwriting">Năm đó, chúng ta chẳng có gì ngoài thời gian và những nụ cười không biết mệt...</p>
                     </div>
                 </div>
-
                 <div class="page">
                     <div class="page-content polaroid-page">
                         <div class="polaroid">
-                            <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&q=80" loading="lazy">
-                            <p class="handwriting caption">Team săn mây lúc 5h sáng</p>
+                            <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&q=80" loading="lazy" alt="Đà Lạt">
+                            <p class="handwriting caption">Săn mây 5h sáng</p>
                         </div>
                     </div>
                 </div>
-
-                <div class="page">
-                    <div class="page-content text-page">
-                        <h3 class="handwriting">Đêm định mệnh đó...</h3>
-                        <p class="handwriting">Chạy deadline xuyên màn đêm. Cả nhóm vật vờ trong phòng tự học, ly cà phê thứ 4 cũng không cứu nổi mí mắt. Vậy mà nhìn lại, đó là lúc chúng ta hiểu nhau nhất.</p>
-                    </div>
-                </div>
-
-                <div class="page">
-                    <div class="page-content polaroid-page">
-                        <div class="polaroid" style="transform: rotate(1deg);">
-                            <iframe width="100%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=0" frameborder="0" loading="lazy"></iframe>
-                            <p class="handwriting caption">Thước phim không bao giờ quên</p>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="page page-cover">
                     <div class="page-content">
-                        <h2>Và còn nhiều nữa...</h2>
+                        <h2>Còn tiếp...</h2>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
-<section class="section-timeline">
-        <h2 class="section-title">Dấu Chân Gửi Gió</h2>
+
+    <section class="section-timeline">
+        <h2 class="section-title" style="text-align: center; color: #0284c7;">Dấu Chân Gửi Gió</h2>
         <div class="timeline-container">
             <div class="timeline-line"></div>
             
             <div class="timeline-item left observer-item">
                 <div class="timeline-polaroid sway-1">
-                    <div class="pin"></div> <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=500&q=80" loading="lazy">
+                    <div class="pin"></div>
+                    <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=500&q=80" loading="lazy" alt="Gặp mặt">
                     <div class="timeline-date">Tháng 9/2022</div>
-                    <p class="handwriting">Ngày đầu tiên gặp mặt, còn ngại ngùng chưa dám bắt chuyện...</p>
+                    <p class="handwriting">Ngày đầu tiên gặp mặt.</p>
                 </div>
             </div>
 
             <div class="timeline-item right observer-item">
                 <div class="timeline-polaroid sway-2">
                     <div class="pin"></div>
-                    <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=500&q=80" loading="lazy">
+                    <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=500&q=80" loading="lazy" alt="Đi chơi">
                     <div class="timeline-date">Tháng 12/2023</div>
-                    <p class="handwriting">Chuyến đi xa đầu tiên. Đứa nào cũng say xe nhưng vui nổ trời.</p>
+                    <p class="handwriting">Chuyến đi xa đầu tiên.</p>
                 </div>
             </div>
-            
-            </div>
+        </div>
     </section>
 
     <section class="section-members">
-        <h2 class="section-title">Mảnh Ghép Của Chúng Ta</h2>
+        <h2 class="section-title" style="text-align: center; color: #0284c7; margin-bottom: 40px;">Mảnh Ghép Của Chúng Ta</h2>
         <div class="members-grid">
-            
             <div class="member-card observer-item" onclick="openMember('Hùng', 'Người gánh vác mọi plan đi chơi, chuyên gia lo xa nhưng luôn chu toàn mọi thứ.', 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&q=80')">
                 <div class="member-avatar">
-                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&q=80" loading="lazy">
+                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&q=80" loading="lazy" alt="Hùng">
                 </div>
                 <h3>Hùng</h3>
             </div>
-
-            <div class="member-card observer-item" onclick="openMember('Lan Anh', 'Cô gái mang năng lượng chữa lành, luôn có sẵn đồ ăn vặt trong balo.', 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&q=80')">
+            <div class="member-card observer-item" onclick="openMember('Lan Anh', 'Cô gái mang năng lượng chữa lành.', 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&q=80')">
                 <div class="member-avatar">
-                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&q=80" loading="lazy">
+                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&q=80" loading="lazy" alt="Lan Anh">
                 </div>
                 <h3>Lan Anh</h3>
             </div>
-
-            <div class="member-card observer-item" onclick="openMember('Minh Đức', 'Photographer có tâm nhất hệ mặt trời, sẵn sàng nằm dài ra đất để chụp ảnh cho chị em.', 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80')">
-                <div class="member-avatar">
-                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80" loading="lazy">
-                </div>
-                <h3>Minh Đức</h3>
-            </div>
-
-            </div>
+        </div>
     </section>
 
     <div id="sheet-overlay" class="sheet-overlay" onclick="closeMember()"></div>
@@ -267,65 +128,9 @@
         <h3 id="sheet-name" class="handwriting">Tên</h3>
         <p id="sheet-desc">Mô tả</p>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
     
-    <script>
-        // --- LOGIC GATEKEEPER & AUDIO (Giữ nguyên) ---
-        const gatekeeper = document.getElementById('gatekeeper');
-        const audio = document.getElementById('bg-audio');
-        const disk = document.getElementById('disk');
-        const playBtn = document.getElementById('play-btn');
-        let isPlaying = false;
-
-        function checkAnswer(isCorrect) {
-            if(isCorrect) {
-                document.getElementById('error-msg').style.opacity = '0';
-                gatekeeper.style.transform = 'scale(1.5)';
-                gatekeeper.style.filter = 'blur(10px)';
-                gatekeeper.style.opacity = '0';
-                gatekeeper.style.pointerEvents = 'none';
-                
-                document.body.classList.add('unlocked');
-                togglePlay();
-            } else {
-                document.getElementById('error-msg').style.opacity = '1';
-                document.querySelector('.quiz-card').animate([
-                    { transform: 'translateX(0px)' }, { transform: 'translateX(-10px)' },
-                    { transform: 'translateX(10px)' }, { transform: 'translateX(0px)' }
-                ], { duration: 300 });
-            }
-        }
-
-        function togglePlay() {
-            if (audio.paused) {
-                audio.play(); disk.style.animationPlayState = 'running';
-                playBtn.classList.replace('fa-play', 'fa-pause'); isPlaying = true;
-            } else {
-                audio.pause(); disk.style.animationPlayState = 'paused';
-                playBtn.classList.replace('fa-pause', 'fa-play'); isPlaying = false;
-            }
-        }
-
-        function nextTrack() { audio.currentTime = 0; if(!isPlaying) togglePlay(); }
-
-        // --- LOGIC KHỞI TẠO SÁCH 3D ---
-        document.addEventListener('DOMContentLoaded', function() {
-            const pageFlip = new St.PageFlip(document.getElementById('flipbook'), {
-                width: 400, // Chiều rộng gốc 1 trang
-                height: 550, // Chiều cao gốc 1 trang
-                size: "stretch", // Tự co giãn theo thiết bị
-                minWidth: 315,
-                maxWidth: 1000,
-                minHeight: 420,
-                maxHeight: 1350,
-                maxShadowOpacity: 0.5, // Độ đậm của bóng đổ khi lật
-                showCover: true, // Cho phép 2 trang bìa cứng độc lập
-                mobileScrollSupport: false // Khóa cuộn trang dọc khi đang vuốt lật sách
-            });
-
-            // Tải các thẻ Div có class "page" vào bộ máy lật sách
-            pageFlip.loadFromHTML(document.querySelectorAll('.page'));
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
