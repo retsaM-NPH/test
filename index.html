@@ -5,132 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanh Xuân Vườn Trường</title>
     
+    <link rel="stylesheet" href="style.css">
+    
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <div id="sunbeams-container"></div>
+    <div id="falling-leaves-container"></div>
+
     <audio id="bg-audio" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <source src="nhac-demo.mp3" type="audio/mpeg">
     </audio>
 
     <div id="gatekeeper">
         <div class="quiz-card">
-            <img src="https://images.unsplash.com/photo-1529156069898-49953eb1b5b4?w=400&q=80" alt="Group">
+            <img src="avatar-nhom.jpg" alt="Nhóm">
             <h2>Ký hiệu bí mật của nhóm là gì?</h2>
             <div class="btn-grid">
-                <button class="quiz-btn" onclick="checkAnswer(false)">A. Trà sữa</button>
-                <button class="quiz-btn" onclick="checkAnswer(false)">B. Deadline</button>
-                <button class="quiz-btn" onclick="checkAnswer(true)">C. Thanh Xuân</button>
-                <button class="quiz-btn" onclick="checkAnswer(false)">D. Ngủ nướng</button>
+                <button class="quiz-btn" data-correct="false">A. Trà sữa full topping</button>
+                <button class="quiz-btn" data-correct="false">B. Chạy Deadline</button>
+                <button class="quiz-btn" data-correct="true">C. Thanh Xuân</button>
+                <button class="quiz-btn" data-correct="false">D. Ngủ nướng</button>
             </div>
             <p class="error-msg" id="error-msg">Sai rồi, thử nhớ lại xem!</p>
         </div>
     </div>
 
-    <section class="hero">
-        <h1>Tháng Năm Rực Rỡ</h1>
-        <p>Gửi lại nụ cười ở góc sân trường</p>
-        <i class="fas fa-chevron-down scroll-down"></i>
+    <section class="hero-section" id="hero">
+        <h1 class="hero-title handwriting">Tháng Năm Rực Rỡ</h1>
+        <p class="hero-subtitle">Gửi lại nụ cười ở góc sân trường</p>
+        
+        <div class="music-widget">
+            <div class="disk" id="disk"></div>
+            <div class="track-info">
+                <span id="current-song-name">Thanh Xuân - Da LAB</span>
+            </div>
+            <div class="controls">
+                <button id="prev-btn"><i class="fas fa-backward"></i></button>
+                <button id="play-btn"><i class="fas fa-play"></i></button>
+                <button id="next-btn"><i class="fas fa-forward"></i></button>
+            </div>
+        </div>
     </section>
 
-    <div id="music-player">
-        <div class="disk" id="disk"></div>
-        <div class="track-info">Thanh Xuân - Da LAB</div>
-        <div class="controls">
-            <i class="fas fa-play" id="play-btn" onclick="togglePlay()"></i>
-            <i class="fas fa-step-forward" onclick="nextTrack()"></i>
-        </div>
-    </div>
-
     <section class="section-book">
-        <h2 class="section-title">Nhật Ký Thanh Xuân</h2>
         <div class="book-wrapper">
-            <div id="flipbook" class="flip-book">
-                <div class="page page-cover">
-                    <div class="page-content">
-                        <h2>Album Ký Ức</h2>
-                        <p>Lật mở để bắt đầu</p>
+            <div id="flipbook">
+                <div class="page hard cover-front">
+                    <h2 class="handwriting">Album Ký Ức</h2>
+                </div>
+                
+                <div class="page paper-texture text-page">
+                    <h3 class="handwriting">Chuyến đi Đà Lạt</h3>
+                    <p class="handwriting">Gió lạnh, sương mù và những câu chuyện chưa kể hết...</p>
+                </div>
+                
+                <div class="page paper-texture image-page">
+                    <div class="photo-frame">
+                        <img src="da-lat.jpg" loading="lazy" alt="Đà Lạt">
                     </div>
                 </div>
-                <div class="page">
-                    <div class="page-content text-page">
-                        <h3 class="handwriting">Chuyến đi Đà Lạt</h3>
-                        <p class="handwriting">Năm đó, chúng ta chẳng có gì ngoài thời gian và những nụ cười không biết mệt...</p>
-                    </div>
-                </div>
-                <div class="page">
-                    <div class="page-content polaroid-page">
-                        <div class="polaroid">
-                            <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&q=80" loading="lazy" alt="Đà Lạt">
-                            <p class="handwriting caption">Săn mây 5h sáng</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="page page-cover">
-                    <div class="page-content">
-                        <h2>Còn tiếp...</h2>
-                    </div>
+
+                <div class="page hard cover-back">
+                    <h2 class="handwriting">Còn tiếp...</h2>
                 </div>
             </div>
         </div>
     </section>
 
     <section class="section-timeline">
-        <h2 class="section-title" style="text-align: center; color: #0284c7;">Dấu Chân Gửi Gió</h2>
+        <svg class="tree-branch" viewBox="0 0 100 1000" preserveAspectRatio="none">
+            <path d="M50,0 Q70,250 40,500 T50,1000" class="branch-path"></path>
+        </svg>
+
         <div class="timeline-container">
-            <div class="timeline-line"></div>
-            
-            <div class="timeline-item left observer-item">
-                <div class="timeline-polaroid sway-1">
-                    <div class="pin"></div>
-                    <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=500&q=80" loading="lazy" alt="Gặp mặt">
-                    <div class="timeline-date">Tháng 9/2022</div>
-                    <p class="handwriting">Ngày đầu tiên gặp mặt.</p>
+            <div class="timeline-node left">
+                <div class="dewdrop"></div>
+                <div class="node-content">
+                    <div class="photo-polaroid">
+                        <img src="gap-mat.jpg" loading="lazy" alt="Gặp mặt">
+                    </div>
+                    <div class="node-text">
+                        <h4>Tháng 9/2022</h4>
+                        <p>Ngày đầu tiên gặp mặt.</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="timeline-item right observer-item">
-                <div class="timeline-polaroid sway-2">
-                    <div class="pin"></div>
-                    <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=500&q=80" loading="lazy" alt="Đi chơi">
-                    <div class="timeline-date">Tháng 12/2023</div>
-                    <p class="handwriting">Chuyến đi xa đầu tiên.</p>
+            <div class="timeline-node right">
+                <div class="dewdrop"></div>
+                <div class="node-content">
+                    <div class="photo-polaroid">
+                        <img src="chuyen-di.jpg" loading="lazy" alt="Chuyến đi">
+                    </div>
+                    <div class="node-text">
+                        <h4>Tháng 12/2023</h4>
+                        <p>Chuyến đi xa đầu tiên.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <section class="section-members">
-        <h2 class="section-title" style="text-align: center; color: #0284c7; margin-bottom: 40px;">Mảnh Ghép Của Chúng Ta</h2>
+        <h2 class="section-title handwriting">Mảnh Ghép Của Chúng Ta</h2>
+        
         <div class="members-grid">
-            <div class="member-card observer-item" onclick="openMember('Hùng', 'Người gánh vác mọi plan đi chơi, chuyên gia lo xa nhưng luôn chu toàn mọi thứ.', 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&q=80')">
-                <div class="member-avatar">
-                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&q=80" loading="lazy" alt="Hùng">
+            <div class="member-card">
+                <div class="card-front">
+                    <div class="avatar-wrapper">
+                        <img src="hung.jpg" loading="lazy" alt="Hùng">
+                    </div>
+                    <h3>Hùng</h3>
                 </div>
-                <h3>Hùng</h3>
-            </div>
-            <div class="member-card observer-item" onclick="openMember('Lan Anh', 'Cô gái mang năng lượng chữa lành.', 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&q=80')">
-                <div class="member-avatar">
-                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&q=80" loading="lazy" alt="Lan Anh">
+                
+                <div class="card-hover-info">
+                    <p>Người gánh vác mọi plan đi chơi, chuyên gia lo xa.</p>
+                    
+                    <div class="reaction-box">
+                        <button class="react-btn heart-btn">
+                            <i class="fas fa-heart"></i> <span class="counter">0</span>
+                        </button>
+                        <button class="react-btn smile-btn">
+                            <i class="fas fa-laugh-squint"></i> <span class="counter">0</span>
+                        </button>
+                    </div>
                 </div>
-                <h3>Lan Anh</h3>
             </div>
-        </div>
+            
+            </div>
     </section>
 
-    <div id="sheet-overlay" class="sheet-overlay" onclick="closeMember()"></div>
-    <div id="bottom-sheet" class="bottom-sheet">
-        <div class="sheet-drag-handle"></div>
-        <img id="sheet-img" src="" alt="Avatar">
-        <h3 id="sheet-name" class="handwriting">Tên</h3>
-        <p id="sheet-desc">Mô tả</p>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
-    
     <script src="script.js"></script>
 </body>
 </html>
