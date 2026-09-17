@@ -126,7 +126,6 @@ import { OutputPass } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/
 
 /* ==========================================================================
    01. CONFIGURATION
-   Replace remote assets and member data here.
    ========================================================================== */
 const CONFIG = {
   project: {
@@ -387,7 +386,7 @@ function buildShelf(){const g=new THREE.Group();g.position.set(6.9,0,-6);furnitu
    14. MEMORY CORE
    ========================================================================== */
 function heartPoint(t,scale=.19){const x=16*Math.pow(Math.sin(t),3);const y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);return new THREE.Vector3(x*scale,y*scale,0);}
-function buildCore(){coreMesh=new THREE.Mesh(new THREE.IcosahedronGeometry(1.12,4),matEmissive(0xff9ad7,3.7));coreMesh.position.set(0,3.32,0);coreGroup.add(coreMesh);coreShell=new THREE.Mesh(new THREE.IcosahedronGeometry(1.58,3),new THREE.MeshBasicMaterial({color:0xff8dca,transparent:true,opacity:.055,wireframe:true,depthWrite:false}));coreShell.position.copy(coreMesh.position);coreGroup.add(coreShell);coreGlow=new THREE.Mesh(new THREE.SphereGeometry(1.84,24,18),new THREE.MeshBasicMaterial({color:0xff8ecb,transparent:true,opacity:.075,blending:THREE.AdditiveBlending,depthWrite:false}));coreGlow.position.copy(coreMesh.position);coreGroup.add(coreGlow);coreRingA=addTorus(coreGroup,{radius:1.7,tube:.034,radialSegments:48,tubularSegments:8,position:[0,3.32,0],rotation:[Math.PI/2,0,0],color:CONFIG.colors.pink,name:"CORE RING A"});coreRingB=addTorus(coreGroup,{radius:1.46,tube:.026,radialSegments:48,tubularSegments:8,position:[0,3.32,0],rotation:[.32,Math.PI/2,0],color:CONFIG.colors.violet,name:"CORE RING B"});coreDeck=addCylinder(coreGroup,{radiusTop:2.02,radiusBottom:2.16,height:.3,radialSegments:64,position:[0,2.16,0],color:0x1d1726,roughness:.41,metalness:.72,name:"CORE DECK"});coreDeck.userData.core=true;interactive.push(coreDeck);addCylinder(coreGroup,{radiusTop:1.66,radiusBottom:1.90,height:1.16,radialSegments:48,position:[0,1.54,0],color:0x17131d,roughness:.52,metalness:.66,name:"CORE PEDESTAL"});addTorus(coreGroup,{radius:1.72,tube:.042,radialSegments:48,tubularSegments:8,position:[0,1.5,0],color:CONFIG.colors.pink,name:"CORE BASE LIGHT"});const label=createTextSprite("MEMORY CORE",{fontSize:28,color:"#fff",scaleX:2.12,scaleY:.40});label.position.set(0,1.12,0);coreMesh.add(label);buildCoreParticles();buildCoreRings();}
+function buildCore(){coreMesh=new THREE.Mesh(new THREE.IcosahedronGeometry(1.12,4),matEmissive(0xff9ad7,3.7));coreMesh.position.set(0,3.32,0);coreGroup.add(coreMesh);coreShell=new THREE.Mesh(new THREE.IcosahedronGeometry(1.58,3),new THREE.MeshBasicMaterial({color:0xff8dca,transparent:true,opacity:.055,wireframe:true,depthWrite:false}));coreShell.position.copy(coreMesh.position);coreGroup.add(coreShell);coreGlow=new THREE.Mesh(new THREE.SphereGeometry(1.84,24,18),new THREE.MeshBasicMaterial({color:0xff8ecb,transparent:true,opacity:.075,blending:THREE.AdditiveBlending,depthWrite:false}));coreGlow.position.copy(coreMesh.position);coreGroup.add(coreGlow);coreRingA=addTorus(coreGroup,{radius:1.7,tube:.034,radialSegments:48,tubularSegments:8,position:[0,3.32,0],rotation:[Math.PI/2,0,0],color:CONFIG.colors.pink,name:"CORE RING A"});coreRingB=addTorus(coreGroup,{radius:1.46,tube:.026,radialSegments:48,tubularSegments:8,position:[0,3.32,0],rotation:[.32,Math.PI/2,0],color:CONFIG.colors.violet,name:"CORE RING B"});const coreDeck=addCylinder(coreGroup,{radiusTop:2.02,radiusBottom:2.16,height:.3,radialSegments:64,position:[0,2.16,0],color:0x1d1726,roughness:.41,metalness:.72,name:"CORE DECK"});coreDeck.userData.core=true;interactive.push(coreDeck);addCylinder(coreGroup,{radiusTop:1.66,radiusBottom:1.90,height:1.16,radialSegments:48,position:[0,1.54,0],color:0x17131d,roughness:.52,metalness:.66,name:"CORE PEDESTAL"});addTorus(coreGroup,{radius:1.72,tube:.042,radialSegments:48,tubularSegments:8,position:[0,1.5,0],color:CONFIG.colors.pink,name:"CORE BASE LIGHT"});const label=createTextSprite("MEMORY CORE",{fontSize:28,color:"#fff",scaleX:2.12,scaleY:.40});label.position.set(0,1.12,0);coreMesh.add(label);buildCoreParticles();buildCoreRings();}
 function buildCoreParticles(){const count=STATE.mobile?CONFIG.performance.mobileCoreParticles:CONFIG.performance.desktopCoreParticles;const positions=new Float32Array(count*3);const seeds=new Float32Array(count);const sizes=new Float32Array(count);const colors=new Float32Array(count*3);const palette=[new THREE.Color(CONFIG.colors.pink),new THREE.Color(CONFIG.colors.pinkSoft),new THREE.Color(CONFIG.colors.violet),new THREE.Color(CONFIG.colors.cyan),new THREE.Color(CONFIG.colors.white)];for(let i=0;i<count;i++){const r=randomRange(1.35,3.2),th=Math.random()*Math.PI*2,ph=Math.acos(randomRange(-1,1));positions[i*3]=Math.sin(ph)*Math.cos(th)*r;positions[i*3+1]=3.32+Math.cos(ph)*r*.64;positions[i*3+2]=Math.sin(ph)*Math.sin(th)*r;seeds[i]=Math.random();sizes[i]=randomRange(.032,.082);const c=pick(palette);colors[i*3]=c.r;colors[i*3+1]=c.g;colors[i*3+2]=c.b;}const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.BufferAttribute(positions,3));g.setAttribute("aSeed",new THREE.BufferAttribute(seeds,1));g.setAttribute("aSize",new THREE.BufferAttribute(sizes,1));g.setAttribute("color",new THREE.BufferAttribute(colors,3));const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uTime:{value:0},uPulse:{value:0}},vertexShader:`attribute float aSeed;attribute float aSize;uniform float uTime;uniform float uPulse;varying vec3 vColor;varying float vSeed;void main(){vec3 p=position;p.y+=sin(uTime*.72+aSeed*24.)*.045;p.x+=cos(uTime*.44+aSeed*17.)*.025;vec4 mv=modelViewMatrix*vec4(p,1.);float pulse=1.+uPulse*(.18+aSeed*.34);gl_PointSize=(aSize*165.*pulse)/max(1.,-mv.z);gl_Position=projectionMatrix*mv;vSeed=aSeed;vColor=color;}`,fragmentShader:`varying vec3 vColor;varying float vSeed;void main(){vec2 uv=gl_PointCoord-vec2(.5);float d=length(uv);float a=smoothstep(.52,.02,d);float c=smoothstep(.18,0.,d);gl_FragColor=vec4(mix(vColor,vec3(1.),c*.7),a*(.5+vSeed*.5));}`});coreParticles=new THREE.Points(g,m);coreParticles.frustumCulled=false;coreGroup.add(coreParticles);}
 function buildCoreRings(){const specs=[{r:2.56,c:CONFIG.colors.pink,o:.2,s:.10,rot:[.34,.2,.1]},{r:2.9,c:CONFIG.colors.violet,o:.16,s:-.08,rot:[1.02,-.2,.15]},{r:3.16,c:CONFIG.colors.cyan,o:.12,s:.06,rot:[1.45,.18,-.16]}];specs.forEach(sp=>{const ring=addTorus(coreGroup,{radius:sp.r,tube:.012,radialSegments:64,tubularSegments:6,position:[0,3.32,0],rotation:sp.rot,material:matLine(sp.c,sp.o),name:"CORE ORBIT"});ring.userData.orbitSpeed=sp.s;});}
 
@@ -495,241 +494,7 @@ window.addEventListener("unhandledrejection",e=>console.error("Memory Lab promis
 initialize();
 
 /* ==========================================================================
-   29. FUTURE DATA CONTRACT NOTES
-   --------------------------------------------------------------------------
-   1. PEOPLE.image -> ảnh thật của thành viên.
-   2. PEOPLE.role -> vai trò / nickname.
-   3. PEOPLE.quote -> câu nói.
-   4. MEDIA -> album ảnh và video.
-   5. TIMELINE -> các mốc thật.
-   6. WISHES -> lời chúc thật.
-   7. CONFIG.remote.model -> GLB thật nếu muốn thêm model ngoài web.
-   ========================================================================== */
-/* ARCHITECTURE NOTE 001: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 002: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 003: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 004: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 005: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 006: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 007: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 008: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 009: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 010: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 011: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 012: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 013: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 014: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 015: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 016: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 017: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 018: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 019: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 020: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 021: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 022: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 023: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 024: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 025: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 026: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 027: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 028: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 029: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 030: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 031: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 032: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 033: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 034: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 035: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 036: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 037: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 038: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 039: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 040: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 041: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 042: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 043: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 044: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 045: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 046: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 047: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 048: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 049: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 050: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 051: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 052: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 053: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 054: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 055: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 056: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 057: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 058: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 059: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 060: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 061: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 062: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 063: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 064: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 065: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 066: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 067: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 068: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 069: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 070: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 071: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 072: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 073: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 074: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 075: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 076: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 077: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 078: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 079: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 080: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 081: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 082: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 083: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 084: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 085: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 086: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 087: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 088: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 089: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 090: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 091: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 092: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 093: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 094: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 095: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 096: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 097: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 098: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 099: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 100: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 101: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 102: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 103: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 104: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 105: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 106: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 107: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 108: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 109: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 110: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 111: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 112: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 113: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 114: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 115: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 116: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 117: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 118: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 119: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 120: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 121: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 122: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 123: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 124: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 125: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 126: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 127: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 128: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 129: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 130: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 131: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 132: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 133: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 134: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 135: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 136: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 137: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 138: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 139: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 140: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 141: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 142: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 143: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 144: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 145: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 146: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 147: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 148: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 149: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 150: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 151: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 152: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 153: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 154: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 155: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 156: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 157: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 158: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 159: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 160: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 161: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 162: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 163: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 164: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 165: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 166: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 167: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 168: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 169: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 170: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 171: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 172: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 173: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 174: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 175: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 176: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 177: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 178: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 179: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 180: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 181: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 182: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 183: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 184: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 185: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 186: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 187: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 188: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 189: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 190: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 191: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 192: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 193: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 194: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 195: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 196: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 197: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 198: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 199: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 200: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 201: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 202: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 203: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 204: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 205: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 206: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 207: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 208: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 209: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 210: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 211: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 212: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 213: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 214: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 215: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 216: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 217: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 218: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 219: Replace demo data with project-owned assets when productionizing. */
-/* ARCHITECTURE NOTE 220: Replace demo data with project-owned assets when productionizing. */
-
-/* ==========================================================================
    30. OPTIONAL PRODUCTION EXTENSIONS
-   These helpers are intentionally self-contained. They can be enabled later
-   when the real yearbook assets are ready.
    ========================================================================== */
 
 const Production = {
@@ -1341,13 +1106,6 @@ preloadMediaBatch([
     console.info("Memory Lab visual warm-up:", ok);
   }
 });
-
-/* ==========================================================================
-   42. FINAL NOTE
-   ========================================================================== */
-// Production architecture: keep the HTML shell stable and move only data/assets
-// into JSON or IndexedDB when the real yearbook content is ready.
-// This preserves the visual system while allowing the content to scale.
 </script>
 </body>
 </html>
