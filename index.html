@@ -1,185 +1,1353 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#e0f2fe">
-    <title>Thanh Xuân Vườn Trường | Kỷ Niệm 2026</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-
-    <link rel="preload" as="image" href="assets/images/background.png" fetchpriority="high">
-    <link rel="preload" as="image" href="assets/images/fore.png">
-    
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05040a">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Memory Lab — The Last Experiment — interactive 3D yearbook">
+<title>Memory Lab — The Last Experiment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05040a;--panel:rgba(12,9,20,.78);--panel2:rgba(10,7,16,.94);--white:#fff;--soft:rgba(255,255,255,.72);--muted:rgba(255,255,255,.48);--dim:rgba(255,255,255,.28);--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.15);--pink:#ff79c8;--pink2:#ffd1eb;--violet:#a78bfa;--cyan:#67e8f9;--mint:#86efac;--amber:#fcd34d;--red:#fb7185;--shadow:0 30px 120px rgba(0,0,0,.52);--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--white);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}body{user-select:none;overscroll-behavior:none}button,input,textarea,select{font:inherit}button{border:0}img,video{display:block;max-width:100%}
+#app{position:fixed;inset:0;overflow:hidden;background:radial-gradient(circle at 50% 42%,rgba(255,121,200,.08),transparent 34%),radial-gradient(circle at 24% 12%,rgba(167,139,250,.065),transparent 25%),#05040a}
+#scene{position:absolute;inset:0;z-index:1}#scene canvas{display:block;width:100%;height:100%;outline:none;touch-action:none;cursor:grab}#scene canvas:active{cursor:grabbing}
+.vignette{position:fixed;inset:0;z-index:8;pointer-events:none;background:radial-gradient(circle at center,transparent 35%,rgba(0,0,0,.18) 67%,rgba(0,0,0,.65) 100%)}
+.scanlines{position:fixed;inset:0;z-index:9;pointer-events:none;opacity:.045;background:repeating-linear-gradient(180deg,transparent 0,transparent 3px,rgba(255,255,255,.035) 4px)}
+.grain{position:fixed;inset:-40%;z-index:10;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain .62s steps(2) infinite}@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-1%,.8%)}50%{transform:translate(.7%,-1.1%)}75%{transform:translate(1.2%,1%)}100%{transform:translate(-.4%,-.6%)}}
+.hud{position:fixed;top:calc(16px + var(--safe-top));left:18px;right:18px;z-index:25;display:flex;justify-content:space-between;align-items:flex-start;gap:18px;pointer-events:none}.brand{max-width:min(690px,78vw)}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.63);font-size:9px;font-weight:800;letter-spacing:.24em;text-transform:uppercase}.dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 15px rgba(134,239,172,.85);animation:dot 1.8s ease-in-out infinite}@keyframes dot{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}.title{margin:10px 0 0;font-family:"Playfair Display",Georgia,serif;font-size:clamp(44px,7vw,96px);font-style:italic;font-weight:600;line-height:.9;letter-spacing:-.055em;text-shadow:0 0 34px rgba(255,121,200,.17),0 20px 80px rgba(0,0,0,.33)}.subtitle{margin:11px 0 0;max-width:650px;color:rgba(255,255,255,.59);font-size:11px;line-height:1.7}.status-box{min-width:190px;padding:12px;border:1px solid var(--line);border-radius:15px;background:rgba(8,6,14,.53);backdrop-filter:blur(18px);box-shadow:var(--shadow);pointer-events:auto}.row{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:9px}.row+.row{margin-top:5px}.row b{color:rgba(255,255,255,.86);font-weight:700}
+.mission{position:fixed;left:18px;bottom:calc(94px + var(--safe-bottom));z-index:25;width:min(328px,calc(100vw - 36px));padding:13px;border:1px solid var(--line);border-radius:17px;background:rgba(8,6,14,.49);backdrop-filter:blur(18px);box-shadow:var(--shadow);pointer-events:none}.mission-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}.mission-top strong{font-size:9px;letter-spacing:.16em;text-transform:uppercase}.mission-top span{font-size:9px;color:var(--muted)}.track{height:6px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.06)}.fill{width:18%;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--pink),var(--violet));box-shadow:0 0 20px rgba(255,121,200,.32);transition:width .65s cubic-bezier(.22,1,.36,1)}.mission-copy{margin-top:8px;color:rgba(255,255,255,.51);font-size:9px;line-height:1.55}
+.hint{position:fixed;right:18px;bottom:calc(96px + var(--safe-bottom));z-index:24;width:min(270px,35vw);padding:10px 12px;border:1px solid rgba(255,255,255,.07);border-radius:99px;background:rgba(7,5,12,.42);backdrop-filter:blur(15px);color:rgba(255,255,255,.45);font-size:9px;text-align:center;line-height:1.45;pointer-events:none;transition:opacity .3s}.hint.hide{opacity:0}
+.nav{position:fixed;left:50%;bottom:calc(13px + var(--safe-bottom));z-index:35;width:min(calc(100% - 28px),860px);transform:translateX(-50%);pointer-events:auto}.nav-shell{display:flex;gap:6px;padding:6px;border:1px solid var(--line2);border-radius:18px;background:rgba(7,5,12,.72);backdrop-filter:blur(20px);box-shadow:var(--shadow)}.nav-btn{flex:1;min-width:0;min-height:45px;padding:8px 10px;border-radius:12px;background:transparent;color:rgba(255,255,255,.49);cursor:pointer;transition:all .18s}.nav-btn:hover{color:#fff;background:rgba(255,255,255,.045);transform:translateY(-1px)}.nav-btn.active{color:#fff;background:linear-gradient(135deg,rgba(255,121,200,.18),rgba(167,139,250,.14));box-shadow:inset 0 0 0 1px rgba(255,255,255,.045),0 0 28px rgba(255,121,200,.08)}.nav-icon{display:block;height:17px;font-size:14px}.nav-label{display:block;margin-top:2px;font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.intro{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 42%,rgba(255,121,200,.08),transparent 30%),#05040a;transition:opacity .66s,visibility .66s}.intro.hide{opacity:0;visibility:hidden;pointer-events:none}.intro-inner{width:min(780px,100%);text-align:center}.intro-code{color:rgba(255,255,255,.42);font-size:9px;font-weight:800;letter-spacing:.27em;text-transform:uppercase}.intro-title{margin:20px 0 0;font-family:"Playfair Display",Georgia,serif;font-size:clamp(58px,11vw,132px);font-style:italic;font-weight:600;line-height:.88;letter-spacing:-.06em;text-shadow:0 0 46px rgba(255,121,200,.23),0 30px 100px rgba(0,0,0,.42)}.intro-copy{max-width:650px;margin:21px auto 0;color:rgba(255,255,255,.54);font-size:12px;line-height:1.78}.terminal{width:min(640px,100%);margin:27px auto 0;padding:17px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(255,255,255,.023);text-align:left}.term{display:grid;grid-template-columns:85px 1fr auto;gap:10px;align-items:baseline;min-height:22px;color:rgba(255,255,255,.42);font-size:9px}.term-key{color:var(--pink2);font-weight:800;letter-spacing:.12em}.term-ok{color:var(--mint);font-weight:800}.intro-actions{display:flex;justify-content:center;gap:9px;margin-top:23px}.primary,.secondary{min-height:45px;padding:11px 18px;border-radius:99px;cursor:pointer;font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;transition:transform .18s,filter .18s,background .18s}.primary{color:#180a13;background:linear-gradient(135deg,#ffd2ec,#ff77bd);box-shadow:0 13px 34px rgba(255,121,200,.18),inset 0 1px 0 rgba(255,255,255,.35)}.secondary{color:rgba(255,255,255,.74);background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.11)}.primary:hover,.secondary:hover{transform:translateY(-1px)}
+.drawer{position:fixed;top:0;right:0;z-index:70;width:min(520px,100vw);height:100%;padding:calc(20px + var(--safe-top)) 18px calc(20px + var(--safe-bottom));overflow:auto;background:linear-gradient(180deg,rgba(16,12,26,.97),rgba(7,5,13,.98));border-left:1px solid var(--line);box-shadow:-40px 0 130px rgba(0,0,0,.54);backdrop-filter:blur(22px);transform:translateX(105%);transition:transform .47s cubic-bezier(.22,1,.36,1)}.drawer.open{transform:translateX(0)}.drawer-head{display:flex;justify-content:space-between;gap:15px;margin-bottom:20px}.drawer-kicker{color:var(--pink2);font-size:9px;font-weight:800;letter-spacing:.22em;text-transform:uppercase}.drawer-title{margin:6px 0 0;font-family:"Playfair Display",Georgia,serif;font-size:35px;font-style:italic;font-weight:600;line-height:1}.close{width:39px;height:39px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);color:#fff;cursor:pointer;font-size:22px}.drawer-note{margin:0 0 17px;color:rgba(255,255,255,.49);font-size:10px;line-height:1.67}.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:0 0 10px}.section-head strong{font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.section-head span{font-size:8px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{position:relative;min-height:185px;overflow:hidden;border:1px solid var(--line);border-radius:15px;background:#0d0914;cursor:pointer;isolation:isolate}.card::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,.82) 100%)}.card img{width:100%;height:100%;min-height:inherit;object-fit:cover;opacity:.84;transition:transform .42s cubic-bezier(.22,1,.36,1),opacity .24s}.card:hover img{transform:scale(1.06);opacity:1}.card-meta{position:absolute;right:0;left:0;bottom:0;z-index:2;padding:36px 11px 11px}.card-meta strong{display:block;font-size:10px;line-height:1.35}.card-meta span{display:block;margin-top:4px;color:rgba(255,255,255,.48);font-size:8px;line-height:1.35}
+.profile{position:relative;min-height:320px;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:#0d0915}.profile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.69}.profile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,4,10,.04),rgba(5,4,10,.94))}.profile-data{position:absolute;right:15px;left:15px;bottom:15px;z-index:2}.profile-role{color:var(--pink2);font-size:8px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.profile-name{margin-top:5px;font-family:"Playfair Display",Georgia,serif;font-size:38px;font-style:italic;line-height:1}.profile-quote{max-width:430px;margin-top:9px;color:rgba(255,255,255,.62);font-size:10px;line-height:1.67}.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.pill{padding:6px 8px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.58);font-size:7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.timeline{position:relative;padding-left:18px}.timeline::before{content:"";position:absolute;left:4px;top:5px;bottom:5px;width:1px;background:linear-gradient(180deg,rgba(255,121,200,.76),rgba(167,139,250,.16))}.t-item{position:relative;padding-bottom:21px}.t-dot{position:absolute;left:-18px;top:5px;width:10px;height:10px;border:2px solid var(--pink);border-radius:50%;background:#100b18;box-shadow:0 0 15px rgba(255,121,200,.30)}.t-date{color:var(--pink2);font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.t-title{margin-top:4px;font-size:12px;font-weight:700}.t-copy{margin-top:5px;color:rgba(255,255,255,.52);font-size:10px;line-height:1.67}.wish-list{display:grid;gap:9px}.wish{padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}.wish strong{display:block;font-size:9px;font-weight:800}.wish p{margin:6px 0 0;color:rgba(255,255,255,.54);font-size:10px;line-height:1.67}
+.media-modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:18px;background:rgba(2,1,5,.75);backdrop-filter:blur(12px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s,visibility .22s}.media-modal.open{opacity:1;visibility:visible;pointer-events:auto}.media-box{width:min(1020px,100%);max-height:88vh;overflow:hidden auto;border:1px solid rgba(255,255,255,.10);border-radius:20px;background:#090711;box-shadow:0 50px 160px rgba(0,0,0,.65)}.media-stage{min-height:220px;display:grid;place-items:center;background:#040309}.media-stage img,.media-stage video{width:100%;max-height:67vh;object-fit:contain;background:#040309}.media-caption{padding:13px 15px 16px}.media-caption strong{display:block;font-size:11px}.media-caption p{margin:5px 0 0;color:rgba(255,255,255,.53);font-size:9px;line-height:1.65}
+#toast{position:fixed;left:50%;bottom:calc(84px + var(--safe-bottom));z-index:150;max-width:calc(100vw - 26px);padding:10px 13px;border:1px solid rgba(255,255,255,.10);border-radius:99px;background:rgba(10,8,16,.88);backdrop-filter:blur(14px);color:rgba(255,255,255,.75);font-size:9px;opacity:0;pointer-events:none;transform:translate(-50%,18px);transition:opacity .2s,transform .2s}.show{opacity:1!important;transform:translate(-50%,0)!important}
+@media(max-width:760px){.hud{top:calc(12px + var(--safe-top));left:12px;right:12px}.brand{max-width:90vw}.title{font-size:clamp(38px,12vw,60px)}.subtitle{max-width:86vw;font-size:9px;line-height:1.55}.status-box,.hint{display:none}.mission{left:12px;right:12px;bottom:calc(88px + var(--safe-bottom));width:auto}.nav{left:9px;right:9px;bottom:calc(8px + var(--safe-bottom));width:auto;transform:none}.nav-shell{gap:4px;padding:4px}.nav-btn{min-height:41px;padding:7px 4px}.nav-label{font-size:7px;letter-spacing:.08em}.nav-icon{font-size:12px;height:15px}.grid{gap:8px}.card{min-height:150px}.actions{grid-template-columns:1fr}.intro-actions{flex-direction:column}.intro-actions>*{width:100%}.term{grid-template-columns:68px 1fr auto;font-size:8px}.drawer{padding-left:14px;padding-right:14px}}
+@media(prefers-reduced-motion:reduce){.grain,.dot{animation:none!important}*,*::before,*::after{transition-duration:1ms!important;animation-duration:1ms!important;animation-iteration-count:1!important}}
+</style>
 </head>
 <body>
+<div id="app">
+  <div id="scene"></div>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+  <div class="grain"></div>
 
-    <div class="parallax-layer" aria-hidden="true">
-        <img src="assets/images/background.png" class="parallax-bg" alt="">
-        <img src="assets/images/fore.png" class="parallax-fore" alt="">
+  <header class="hud">
+    <div class="brand">
+      <div class="eyebrow"><span class="dot"></span>MEMORY ARCHIVE · ONLINE</div>
+      <h1 class="title">The Last Experiment</h1>
+      <p class="subtitle">Một phòng thí nghiệm 3D lưu giữ con người, những ngày tháng, những tấm ảnh, video và những điều không thể đo bằng một con số.</p>
     </div>
-
-    <div id="environment-container" aria-hidden="true">
-        <div id="sunbeams-container"></div>
-        <div id="falling-leaves-container"></div>
+    <div class="status-box">
+      <div class="row"><span>ARCHIVE</span><b id="hudSubjects">11 SUBJECTS</b></div>
+      <div class="row"><span>CORE</span><b id="hudCore">STANDBY</b></div>
+      <div class="row"><span>RENDER</span><b id="hudRender">WEBGL</b></div>
+      <div class="row"><span>QUALITY</span><b id="hudQuality">AUTO</b></div>
     </div>
+  </header>
 
-    <audio id="bg-audio" preload="metadata"></audio>
+  <section class="mission">
+    <div class="mission-top"><strong>Mission · Preserve The Memory</strong><span id="missionCounter">2 / 11</span></div>
+    <div class="track"><div class="fill" id="missionFill"></div></div>
+    <div class="mission-copy" id="missionCopy">Khám phá các station trong phòng. Mỗi station mở ra một lớp dữ liệu của một người hoặc một mốc ký ức.</div>
+  </section>
 
-    <dialog id="gatekeeper" open>
-        <div class="quiz-wrapper">
-            <h2>Ký hiệu bí mật của nhóm là gì?</h2>
-            <menu class="quiz-options">
-                <li><button class="quiz-btn" data-correct="false">A. Trà sữa</button></li>
-                <li><button class="quiz-btn" data-correct="false">B. Chạy Deadline</button></li>
-                <li><button class="quiz-btn" data-correct="true">C. Thanh Xuân</button></li>
-                <li><button class="quiz-btn" data-correct="false">D. Ngủ nướng</button></li>
-            </menu>
-            <p id="quiz-error" role="alert">Sai rồi, thử nhớ lại xem!</p>
-        </div>
-    </dialog>
+  <div class="hint" id="hint">Kéo để xoay · scroll / pinch để zoom · chạm vật thể để khám phá</div>
 
-    <main id="main-content">
-        
-        <header class="section-hero">
-            <h1 class="handwriting">Tháng Năm Rực Rỡ</h1>
-            <p class="subtitle">Cùng nhau viết tiếp những ước mơ...</p>
-            
-            <nav class="music-controller">
-                <div class="vinyl-disk"></div>
-                <div class="track-title" id="track-title">Đang tải nhạc...</div>
-                <div class="audio-controls">
-                    <button id="btn-prev"><i class="fas fa-backward"></i></button>
-                    <button id="btn-play"><i class="fas fa-play"></i></button>
-                    <button id="btn-next"><i class="fas fa-forward"></i></button>
-                </div>
-            </nav>
-        </header>
+  <nav class="nav">
+    <div class="nav-shell">
+      <button class="nav-btn active" data-nav="lab"><span class="nav-icon">◉</span><span class="nav-label">Lab</span></button>
+      <button class="nav-btn" data-nav="people"><span class="nav-icon">◌</span><span class="nav-label">People</span></button>
+      <button class="nav-btn" data-nav="timeline"><span class="nav-icon">◷</span><span class="nav-label">Timeline</span></button>
+      <button class="nav-btn" data-nav="archive"><span class="nav-icon">▣</span><span class="nav-label">Archive</span></button>
+      <button class="nav-btn" data-nav="wishes"><span class="nav-icon">♡</span><span class="nav-label">Wishes</span></button>
+    </div>
+  </nav>
 
-        <section class="section-book">
-            <div class="book-chassis">
-                <div id="flipbook-engine">
-                    
-                    <article class="page hard cover-page">
-                        <figure class="full-cover">
-                            <img src="assets/images/bookcv.png" alt="Bìa Album">
-                        </figure>
-                    </article>
-                    
-                    <article class="page paper-texture">
-                        <div class="page-inner text-layout">
-                            <h3 class="handwriting">Lời ngỏ</h3>
-                            <p class="handwriting">Cuốn sách này lưu giữ những mảnh ghép không thể nào quên. Hãy lật mở thật chậm...</p>
-                        </div>
-                    </article>
+  <section class="intro" id="intro">
+    <div class="intro-inner">
+      <div class="intro-code">INITIALIZING MEMORY ARCHIVE // 2026</div>
+      <h2 class="intro-title">Memory Lab</h2>
+      <p class="intro-copy">The Last Experiment là một yearbook tương tác nơi căn phòng thí nghiệm trở thành nhân vật chính, còn 11 con người và vô số ký ức được lưu trữ bên trong.</p>
+      <div class="terminal">
+        <div class="term"><span class="term-key">SYSTEM</span><span>Boot sequence</span><span class="term-ok">OK</span></div>
+        <div class="term"><span class="term-key">ROOM</span><span>Central Laboratory</span><span class="term-ok">READY</span></div>
+        <div class="term"><span class="term-key">CORE</span><span>Memory Core</span><span class="term-ok">STABLE</span></div>
+        <div class="term"><span class="term-key">ARCHIVE</span><span>11 subjects detected</span><span class="term-ok">FOUND</span></div>
+        <div class="term"><span class="term-key">MEDIA</span><span>Photo / video channels</span><span class="term-ok">ONLINE</span></div>
+      </div>
+      <div class="intro-actions">
+        <button class="primary" id="enterBtn">Enter The Lab</button>
+        <button class="secondary" id="demoBtn">Trigger Core Demo</button>
+      </div>
+    </div>
+  </section>
 
-                    <article class="page paper-texture">
-                        <div class="page-inner text-layout">
-                            <h3 class="handwriting">Chuyến đi Đà Lạt</h3>
-                            <p class="handwriting">Gió lạnh, sương mù và những câu chuyện chưa kể hết. Thanh xuân là những chuyến đi không màng đích đến, chỉ cần có nhau.</p>
-                        </div>
-                    </article>
-                    
-                    <article class="page paper-texture">
-                        <div class="page-inner photo-layout">
-                            <figure class="polaroid-frame">
-                                <img src="assets/images/anh-demo-1.jpg" loading="lazy" alt="Đà Lạt">
-                                <figcaption class="handwriting">Săn mây 5h sáng</figcaption>
-                            </figure>
-                        </div>
-                    </article>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <div><div class="drawer-kicker" id="drawerKicker">Memory Archive</div><h2 class="drawer-title" id="drawerTitle">Explore</h2></div>
+      <button class="close" id="closeDrawer">×</button>
+    </div>
+    <p class="drawer-note" id="drawerNote">Nội dung demo đang dùng asset công khai trên web. Hãy đổi CONFIG ở script để dùng dữ liệu thật.</p>
+    <div id="drawerContent"></div>
+  </aside>
 
-                    <article class="page paper-texture">
-                        <div class="page-inner video-layout">
-                            <figure class="polaroid-frame">
-                                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=0" loading="lazy"></iframe>
-                                <figcaption class="handwriting">Thước phim khùng điên nhất</figcaption>
-                            </figure>
-                        </div>
-                    </article>
+  <div class="media-modal" id="mediaModal" aria-hidden="true">
+    <div class="media-box" role="dialog" aria-modal="true">
+      <div class="media-stage" id="mediaStage"></div>
+      <div class="media-caption"><strong id="mediaTitle">Memory</strong><p id="mediaDescription">A memory stored in the archive.</p></div>
+    </div>
+  </div>
 
-                    <article class="page hard cover-page">
-                        <div class="back-cover-content">
-                            <h2 class="handwriting">Vẫn còn tiếp...</h2>
-                        </div>
-                    </article>
+  <div id="toast"></div>
+</div>
 
-                </div>
-            </div>
-        </section>
+<script type="module">
+/* ==========================================================================
+   MEMORY LAB — THE LAST EXPERIMENT
+   Single-file Three.js yearbook prototype.
+   ========================================================================== */
 
-        <div class="section-connector"></div>
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
+import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/OutputPass.js";
 
-        <section class="section-timeline">
-            <svg class="timeline-svg-engine" viewBox="0 0 100 1000" preserveAspectRatio="none">
-                <path d="M50,0 Q70,250 40,500 T50,1000" class="branch-path"></path>
-            </svg>
+/* ==========================================================================
+   01. CONFIGURATION
+   Replace remote assets and member data here.
+   ========================================================================== */
+const CONFIG = {
+  project: {
+    year: "2026",
+    groupName: "CENTRAL LAB",
+    memberCount: 11,
+    title: "Memory Lab",
+    subtitle: "The Last Experiment"
+  },
+  performance: {
+    maxDesktopDpr: 1.45,
+    maxMobileDpr: 1.0,
+    desktopDust: 720,
+    mobileDust: 300,
+    desktopStars: 120,
+    mobileStars: 54,
+    desktopCoreParticles: 960,
+    mobileCoreParticles: 520,
+    bloomDesktop: 1.04,
+    bloomMobile: 0.70
+  },
+  colors: {
+    bg: 0x05040a,
+    floor: 0x0b0814,
+    wall: 0x0e0a17,
+    metal: 0x211b2a,
+    darkMetal: 0x17121e,
+    pink: 0xff79c8,
+    pinkSoft: 0xffcce8,
+    violet: 0xa78bfa,
+    cyan: 0x67e8f9,
+    mint: 0x86efac,
+    amber: 0xfcd34d,
+    red: 0xfb7185,
+    white: 0xffffff
+  },
+  remote: {
+    model: {
+      enabled: true,
+      url: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/SciFiHelmet/GLB/SciFiHelmet.glb",
+      position: [4.5, 2.42, -1.1],
+      scale: 1.25,
+      label: "REMOTE 3D SPECIMEN"
+    },
+    images: {
+      lab: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=1200&q=84",
+      glass: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=84",
+      people: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=84",
+      science: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1200&q=84",
+      notebook: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=84",
+      computer: "https://images.unsplash.com/photo-1517336714739-489689fd1ca8?auto=format&fit=crop&w=1200&q=84"
+    },
+    videos: {
+      flower: "https://mdn.github.io/shared-assets/videos/flower.mp4"
+    }
+  }
+};
 
-            <div class="timeline-wrapper">
-                <article class="timeline-event left-aligned">
-                    <div class="dewdrop-anchor"></div>
-                    <div class="event-card">
-                        <figure class="event-photo">
-                            <img src="assets/images/anh-demo-2.jpg" loading="lazy" alt="Gặp mặt">
-                        </figure>
-                        <div class="event-info">
-                            <time>Tháng 9/2022</time>
-                            <p class="handwriting">Lớp chúng ta là một gia đình.</p>
-                        </div>
-                    </div>
-                </article>
+/* ==========================================================================
+   02. DEMO PEOPLE
+   ========================================================================== */
+const PEOPLE = [
+  { id: 1, name: "Người 01", role: "The Observer", quote: "Có những ngày chúng ta không biết mình đang tạo ra ký ức.", tags: ["Microscope", "Quiet Focus"], color: CONFIG.colors.pink, image: CONFIG.remote.images.lab },
+  { id: 2, name: "Người 02", role: "The Catalyst", quote: "Một phản ứng nhỏ cũng có thể thay đổi cả một buổi chiều.", tags: ["Reaction", "Energy"], color: CONFIG.colors.violet, image: CONFIG.remote.images.glass },
+  { id: 3, name: "Người 03", role: "The Archivist", quote: "Nếu hôm nay đáng nhớ, hãy lưu lại trước khi ngày mai đến.", tags: ["Archive", "Photos"], color: CONFIG.colors.cyan, image: CONFIG.remote.images.people },
+  { id: 4, name: "Người 04", role: "The Builder", quote: "Chúng ta học bằng cách làm, và lớn lên bằng cách cùng làm.", tags: ["Build", "Experiment"], color: CONFIG.colors.mint, image: CONFIG.remote.images.science },
+  { id: 5, name: "Người 05", role: "The Dreamer", quote: "Một căn phòng bình thường có thể chứa một thế giới rất lớn.", tags: ["Ideas", "Dreams"], color: CONFIG.colors.amber, image: CONFIG.remote.images.notebook },
+  { id: 6, name: "Người 06", role: "The Connector", quote: "Điều giữ mọi thứ lại với nhau không phải thiết bị, mà là con người.", tags: ["People", "Link"], color: CONFIG.colors.red, image: CONFIG.remote.images.computer },
+  { id: 7, name: "Người 07", role: "The Detail", quote: "Nhìn kỹ hơn một chút, bạn sẽ thấy những điều rất nhỏ rất đẹp.", tags: ["Detail", "Precision"], color: CONFIG.colors.pinkSoft, image: CONFIG.remote.images.lab },
+  { id: 8, name: "Người 08", role: "The Spark", quote: "Có những cuộc trò chuyện bắt đầu từ một tiếng cười.", tags: ["Spark", "Laugh"], color: CONFIG.colors.violet, image: CONFIG.remote.images.people },
+  { id: 9, name: "Người 09", role: "The Navigator", quote: "Không phải lúc nào cũng biết đích đến, nhưng chúng ta đã cùng đi.", tags: ["Journey", "Maps"], color: 0x93c5fd, image: CONFIG.remote.images.science },
+  { id: 10, name: "Người 10", role: "The Keeper", quote: "Giữ lại những gì không muốn quên, thế là đủ.", tags: ["Keeper", "Memory"], color: 0xf9a8d4, image: CONFIG.remote.images.notebook },
+  { id: 11, name: "Người 11", role: "The Final Variable", quote: "Mỗi người là một biến số. Cùng nhau, chúng ta thành một phương trình.", tags: ["Final", "Variable"], color: CONFIG.colors.cyan, image: CONFIG.remote.images.computer }
+];
 
-                <article class="timeline-event right-aligned">
-                    <div class="dewdrop-anchor"></div>
-                    <div class="event-card">
-                        <figure class="event-photo">
-                            <img src="assets/images/anh-demo-3.jpg" loading="lazy" alt="Khóa luận">
-                        </figure>
-                        <div class="event-info">
-                            <time>Tháng 6/2026</time>
-                            <p class="handwriting">Bảo vệ thành công rực rỡ.</p>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </section>
+/* ==========================================================================
+   03. TIMELINE
+   ========================================================================== */
+const TIMELINE = [
+  { date: "01 · First Contact", title: "Căn phòng đầu tiên", copy: "Những chiếc bàn, những thiết bị, những gương mặt chưa biết rằng sẽ trở thành một phần của nhau." },
+  { date: "02 · First Experiment", title: "Lần đầu cùng làm", copy: "Không phải thí nghiệm nào cũng thành công, nhưng những ngày đó luôn để lại một câu chuyện." },
+  { date: "03 · Noise", title: "Những ngày ồn ào", copy: "Tiếng cười, deadline, những cuộc tranh luận và vô số khoảnh khắc không có trong giáo trình." },
+  { date: "04 · Archive", title: "Bắt đầu lưu giữ", copy: "Những bức ảnh được chụp, những video được gửi vào nhóm và những câu nói bắt đầu có giá trị." },
+  { date: "05 · The Last Experiment", title: "Thí nghiệm cuối cùng", copy: "Không phải để đo một con số. Chỉ để biết một chặng đường đã để lại bao nhiêu ký ức." },
+  { date: "06 · Graduation", title: "Memory preserved", copy: "Căn phòng có thể trống đi. Nhưng archive vẫn còn." }
+];
 
-        <section class="section-members">
-            <h2 class="handwriting title-centered">Mảnh Ghép Của Chúng Ta</h2>
-            <div class="members-grid">
-                
-                <article class="member-card">
-                    <div class="member-front">
-                        <figure class="member-avatar">
-                            <img src="assets/images/hung.jpg" loading="lazy" alt="Hùng">
-                        </figure>
-                        <h3>Hùng</h3>
-                    </div>
-                    <div class="member-reveal">
-                        <p>Project Manager của nhóm. Người gánh vác mọi plan đi chơi, chuyên gia lo xa.</p>
-                        <div class="interaction-bar">
-                            <button class="action-btn" data-type="heart">
-                                <i class="fas fa-heart"></i> <span class="count">24</span>
-                            </button>
-                            <button class="action-btn" data-type="smile">
-                                <i class="fas fa-laugh-squint"></i> <span class="count">8</span>
-                            </button>
-                        </div>
-                    </div>
-                </article>
-                
-                </div>
-        </section>
-    </main>
+/* ==========================================================================
+   04. WISHES
+   ========================================================================== */
+const WISHES = [
+  { author: "Archive Note #01", text: "Chúc chúng ta sau này vẫn có những ngày bận rộn, nhưng vẫn nhớ mình đã từng bận rộn cùng nhau." },
+  { author: "Archive Note #02", text: "Mong rằng khi nhìn lại căn phòng này, mỗi người đều nhớ ít nhất một khoảnh khắc khiến mình mỉm cười." },
+  { author: "Archive Note #03", text: "Không cần một phiên bản hoàn hảo của thanh xuân. Chỉ cần phiên bản thật." },
+  { author: "Archive Note #04", text: "Nếu có thể mở lại một ngày, hãy mở lại một buổi chiều rất bình thường." },
+  { author: "Archive Note #05", text: "Thứ còn lại sau một hành trình dài không phải là điểm số, mà là người đã đứng cạnh mình lúc đó." }
+];
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
-    <script src="script.js"></script>
+/* ==========================================================================
+   05. MEDIA
+   ========================================================================== */
+const MEDIA = [
+  { type: "image", title: "Laboratory Surface", description: "Ảnh demo công khai cho khu Lab Archive.", url: CONFIG.remote.images.lab },
+  { type: "image", title: "Glass & Light", description: "Visual mô phỏng vật liệu phòng lab.", url: CONFIG.remote.images.glass },
+  { type: "image", title: "Class Memory", description: "Demo visual cho khu People.", url: CONFIG.remote.images.people },
+  { type: "image", title: "Science Moment", description: "Demo visual cho Timeline / Experiment.", url: CONFIG.remote.images.science },
+  { type: "image", title: "Notebook", description: "Demo visual cho wishes / letters.", url: CONFIG.remote.images.notebook },
+  { type: "image", title: "Digital Archive", description: "Demo visual cho terminal / archive.", url: CONFIG.remote.images.computer },
+  { type: "video", title: "Growth", description: "Video demo web dùng để kiểm tra media pipeline.", url: CONFIG.remote.videos.flower }
+];
+
+/* ==========================================================================
+   06. DOM
+   ========================================================================== */
+const DOM = {
+  intro: document.getElementById("intro"),
+  enterBtn: document.getElementById("enterBtn"),
+  demoBtn: document.getElementById("demoBtn"),
+  drawer: document.getElementById("drawer"),
+  closeDrawer: document.getElementById("closeDrawer"),
+  drawerKicker: document.getElementById("drawerKicker"),
+  drawerTitle: document.getElementById("drawerTitle"),
+  drawerNote: document.getElementById("drawerNote"),
+  drawerContent: document.getElementById("drawerContent"),
+  mediaModal: document.getElementById("mediaModal"),
+  mediaStage: document.getElementById("mediaStage"),
+  mediaTitle: document.getElementById("mediaTitle"),
+  mediaDescription: document.getElementById("mediaDescription"),
+  hudSubjects: document.getElementById("hudSubjects"),
+  hudCore: document.getElementById("hudCore"),
+  hudRender: document.getElementById("hudRender"),
+  hudQuality: document.getElementById("hudQuality"),
+  missionCounter: document.getElementById("missionCounter"),
+  missionFill: document.getElementById("missionFill"),
+  missionCopy: document.getElementById("missionCopy"),
+  hint: document.getElementById("hint"),
+  toast: document.getElementById("toast"),
+  sceneHost: document.getElementById("scene")
+};
+
+/* ==========================================================================
+   07. STATE
+   ========================================================================== */
+const STATE = {
+  mobile: window.innerWidth <= 760,
+  reducedMotion: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
+  elapsed: 0,
+  lastNow: performance.now(),
+  selectedPerson: null,
+  visited: new Set([0, 3]),
+  corePulse: 0,
+  coreReaction: 0,
+  cameraFocus: null,
+  hovered: null,
+  pointerDown: null,
+  activeSection: "lab",
+  introHidden: false
+};
+
+/* ==========================================================================
+   08. THREE GLOBALS
+   ========================================================================== */
+let renderer;
+let scene;
+let camera;
+let controls;
+let composer;
+let bloomPass;
+let gltfLoader;
+let remoteModel;
+let remoteLabel;
+let coreMesh;
+let coreShell;
+let coreGlow;
+let coreRingA;
+let coreRingB;
+let coreParticles;
+let mainDust;
+let ambientStars;
+let roomClock;
+
+const root = new THREE.Group();
+const room = new THREE.Group();
+const furniture = new THREE.Group();
+const stationsGroup = new THREE.Group();
+const linksGroup = new THREE.Group();
+const atmosphereGroup = new THREE.Group();
+const coreGroup = new THREE.Group();
+const modelGroup = new THREE.Group();
+const interactive = [];
+const stations = [];
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+/* ==========================================================================
+   09. UTILS
+   ========================================================================== */
+function clamp(value, min, max){ return Math.max(min, Math.min(max, value)); }
+function lerp(a,b,t){ return a + (b-a)*t; }
+function damp(current,target,lambda,dt){ return lerp(current,target,1-Math.exp(-lambda*dt)); }
+function easeOutCubic(t){ const x=clamp(t,0,1); return 1-Math.pow(1-x,3); }
+function randomRange(min,max){ return min+Math.random()*(max-min); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function hexCss(hex){ return `#${hex.toString(16).padStart(6,"0")}`; }
+function showToast(message,duration=2200){ DOM.toast.textContent=message;DOM.toast.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>DOM.toast.classList.remove("show"),duration); }
+function updateMission(){ const n=STATE.visited.size;const total=PEOPLE.length;DOM.missionCounter.textContent=`${n} / ${total}`;DOM.missionFill.style.width=`${Math.max(4,n/total*100)}%`;if(n>=total){DOM.missionCopy.textContent="Archive complete. Tất cả 11 station đã được kích hoạt. Memory Core sẵn sàng.";DOM.hudCore.textContent="READY";}else{DOM.missionCopy.textContent=`${total-n} station còn lại. Hãy tiếp tục khám phá căn phòng.`;} }
+function markVisited(index){ if(index<0||index>=PEOPLE.length)return;STATE.visited.add(index);updateMission(); }
+function createTextSprite(text,opt={}){const canvas=document.createElement("canvas");canvas.width=900;canvas.height=220;const ctx=canvas.getContext("2d");if(!ctx)return new THREE.Sprite();ctx.clearRect(0,0,900,220);ctx.font=`800 ${opt.fontSize||32}px Montserrat,Arial,sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle=opt.color||"#fff";ctx.shadowColor="rgba(255,121,200,.35)";ctx.shadowBlur=18;ctx.fillText(text,450,111);const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;tex.minFilter=THREE.LinearFilter;tex.magFilter=THREE.LinearFilter;const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));sprite.scale.set(opt.scaleX||2.2,opt.scaleY||.42,1);return sprite;}
+
+/* ==========================================================================
+   10. MATERIAL HELPERS
+   ========================================================================== */
+function matStandard(options={}){return new THREE.MeshStandardMaterial({color:options.color??CONFIG.colors.white,roughness:options.roughness??.62,metalness:options.metalness??.18,transparent:options.transparent??false,opacity:options.opacity??1,emissive:options.emissive??0,emissiveIntensity:options.emissiveIntensity??0,side:options.side??THREE.FrontSide});}
+function matEmissive(color,intensity=2){return new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:intensity,roughness:.26,metalness:.08});}
+function matGlass(color,opacity=.18){return new THREE.MeshPhysicalMaterial({color,transparent:true,opacity,roughness:.16,metalness:.12,transmission:.12,thickness:.48,ior:1.45,side:THREE.DoubleSide});}
+function matLine(color,opacity=.3){return new THREE.LineBasicMaterial({color,transparent:true,opacity});}
+function addBox(parent,opt={}){const g=new THREE.BoxGeometry(...(opt.size||[1,1,1]));const m=opt.material||matStandard(opt);const o=new THREE.Mesh(g,m);o.position.set(...(opt.position||[0,0,0]));o.rotation.set(...(opt.rotation||[0,0,0]));o.name=opt.name||"BOX";parent.add(o);return o;}
+function addCylinder(parent,opt={}){const g=new THREE.CylinderGeometry(opt.radiusTop??1,opt.radiusBottom??1,opt.height??1,opt.radialSegments??32,opt.heightSegments??1,opt.openEnded??false);const m=opt.material||matStandard(opt);const o=new THREE.Mesh(g,m);o.position.set(...(opt.position||[0,0,0]));o.rotation.set(...(opt.rotation||[0,0,0]));o.name=opt.name||"CYLINDER";parent.add(o);return o;}
+function addSphere(parent,opt={}){const g=new THREE.SphereGeometry(opt.radius??1,opt.widthSegments??24,opt.heightSegments??18);const m=opt.material||matStandard(opt);const o=new THREE.Mesh(g,m);o.position.set(...(opt.position||[0,0,0]));o.name=opt.name||"SPHERE";parent.add(o);return o;}
+function addTorus(parent,opt={}){const g=new THREE.TorusGeometry(opt.radius??1,opt.tube??.03,opt.radialSegments??32,opt.tubularSegments??10);const m=opt.material||matEmissive(opt.color??CONFIG.colors.pink,opt.intensity??2);const o=new THREE.Mesh(g,m);o.position.set(...(opt.position||[0,0,0]));o.rotation.set(...(opt.rotation||[0,0,0]));o.name=opt.name||"TORUS";parent.add(o);return o;}
+
+/* ==========================================================================
+   11. RENDERER / SCENE / CAMERA
+   ========================================================================== */
+function setupRenderer(){renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:"high-performance"});const dpr=Math.min(window.devicePixelRatio||1,STATE.mobile?CONFIG.performance.maxMobileDpr:CONFIG.performance.maxDesktopDpr);renderer.setPixelRatio(dpr);renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.03;renderer.setClearColor(CONFIG.colors.bg,1);DOM.sceneHost.appendChild(renderer.domElement);}
+function setupScene(){scene=new THREE.Scene();scene.background=new THREE.Color(CONFIG.colors.bg);scene.fog=new THREE.FogExp2(CONFIG.colors.bg,STATE.mobile?.038:.028);scene.add(root);root.add(room,furniture,stationsGroup,linksGroup,atmosphereGroup,coreGroup,modelGroup);}
+function setupCamera(){camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.1,100);camera.position.set(0,4.7,13.6);camera.lookAt(0,2.2,0);}
+function setupControls(){controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.enablePan=false;controls.minDistance=8;controls.maxDistance=20;controls.minPolarAngle=Math.PI*.25;controls.maxPolarAngle=Math.PI*.64;controls.target.set(0,2.15,0);controls.autoRotate=false;controls.autoRotateSpeed=.22;}
+function setupComposer(){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));bloomPass=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),STATE.mobile?CONFIG.performance.bloomMobile:CONFIG.performance.bloomDesktop,.70,.82);composer.addPass(bloomPass);composer.addPass(new OutputPass());}
+function setupLights(){scene.add(new THREE.HemisphereLight(0xf4e8f3,0x05040a,.78));const key=new THREE.DirectionalLight(0xffffff,1.25);key.position.set(3.5,9.2,6);scene.add(key);const pink=new THREE.PointLight(CONFIG.colors.pink,8.3,19,2);pink.position.set(-4,4.2,2.3);scene.add(pink);const violet=new THREE.PointLight(CONFIG.colors.violet,7.0,18,2);violet.position.set(4,4.2,-3);scene.add(violet);const cyan=new THREE.PointLight(CONFIG.colors.cyan,5.0,16,2);cyan.position.set(0,6.0,-4.5);scene.add(cyan);}
+
+/* ==========================================================================
+   12. FLOOR / WALLS / STRUCTURE
+   ========================================================================== */
+function buildFloor(){addBox(room,{size:[22,.4,22],position:[0,-.2,0],color:CONFIG.colors.floor,roughness:.84,metalness:.1,name:"LAB FLOOR"});const grid=new THREE.GridHelper(20,20,0x584e65,0x2c2536);grid.position.y=.01;grid.material.transparent=true;grid.material.opacity=.23;room.add(grid);}
+function buildWalls(){const wm=matStandard({color:CONFIG.colors.wall,roughness:.88,metalness:.06});addBox(room,{size:[20,9,.5],position:[0,4.25,-7.2],material:wm,name:"BACK WALL"});addBox(room,{size:[.5,9,20],position:[-10,4.25,0],material:wm,name:"LEFT WALL"});addBox(room,{size:[.5,9,20],position:[10,4.25,0],material:wm,name:"RIGHT WALL"});}
+function buildWallFrame(){const fm=matStandard({color:0x27212f,roughness:.44,metalness:.72});for(const x of [-8,-4,0,4,8])addBox(room,{size:[.12,8.5,.12],position:[x,4.25,-6.91],material:fm,name:"WALL RAIL"});for(const y of [1.2,3,4.8,6.6])addBox(room,{size:[19.2,.1,.1],position:[0,y,-6.89],material:fm,name:"WALL RAIL"});}
+function buildCeiling(){const fm=matStandard({color:0x24202d,roughness:.4,metalness:.72});for(const x of [-7,-3.5,0,3.5,7])addBox(room,{size:[.13,.13,16.8],position:[x,7.92,0],material:fm,name:"CEILING RAIL"});const lights=[[-5.3,-4.1],[0,-4.1],[5.3,-4.1],[-5.3,1.2],[0,1.2],[5.3,1.2]];lights.forEach(([x,z],i)=>addBox(room,{size:[2.7,.08,.16],position:[x,7.48,z],material:matEmissive(i%2?0xe7ddff:0xffe8f5,1.55),name:"CEILING LIGHT"}));}
+function buildWallPanels(){for(let i=0;i<5;i++){const x=-7+i*3.5;addBox(room,{size:[2.6,2.1,.12],position:[x,5.05,-6.84],color:0x17121f,roughness:.55,metalness:.34,name:"ARCHIVE PANEL"});addBox(room,{size:[2.2,.035,.035],position:[x,5.85,-6.74],material:matEmissive(i%2?CONFIG.colors.violet:CONFIG.colors.pink,1.65),name:"ARCHIVE GLOW"}).userData.phase=i*.55;}}
+function buildRoomLabels(){const label=createTextSprite("MEMORY LAB / CENTRAL ROOM",{fontSize:30,color:"#ffd9ed",scaleX:4.45,scaleY:.55});label.position.set(0,6.08,-6.47);room.add(label);const sub=createTextSprite("11 SUBJECTS · 1 ROOM · 1 JOURNEY",{fontSize:18,color:"#a9a1b2",scaleX:3.45,scaleY:.31});sub.position.set(0,5.52,-6.47);room.add(sub);roomClock=createTextSprite("ARCHIVE TIME 00:00",{fontSize:16,color:"#d7cde2",scaleX:2.3,scaleY:.3});roomClock.position.set(-6.1,6.48,-6.46);room.add(roomClock);}
+
+/* ==========================================================================
+   13. FURNITURE
+   ========================================================================== */
+function buildTable(){const g=new THREE.Group();g.position.z=1;furniture.add(g);addBox(g,{size:[7.8,.48,3.1],position:[0,2.08,0],color:0x19151f,roughness:.46,metalness:.34,name:"CENTRAL TABLE"});addBox(g,{size:[7.4,.06,2.72],position:[0,2.34,0],color:0x2b2233,roughness:.33,metalness:.17,name:"TABLE INSERT"});for(const [x,y,z] of [[-3.1,1,-1],[3.1,1,-1],[-3.1,1,1],[3.1,1,1]])addBox(g,{size:[.24,2,.24],position:[x,y,z],color:0x27212f,roughness:.48,metalness:.65,name:"TABLE LEG"});addBox(g,{size:[7.56,.022,2.77],position:[0,2.375,0],material:matEmissive(0x44223e,1.6),name:"TABLE EDGE LIGHT"});}
+function buildChair(x,z,rot){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;furniture.add(g);addBox(g,{size:[.94,.18,.94],position:[0,1.04,0],color:0x24202d,roughness:.56,metalness:.16,name:"CHAIR SEAT"});addBox(g,{size:[.94,1.04,.16],position:[0,1.55,.39],color:0x17131f,roughness:.64,metalness:.14,name:"CHAIR BACK"});for(const [x1,z1] of [[-.3,-.28],[.3,-.28],[-.3,.28],[.3,.28]])addCylinder(g,{radiusTop:.035,radiusBottom:.05,height:1.02,radialSegments:12,position:[x1,.5,z1],color:0x2b2634,roughness:.42,metalness:.7,name:"CHAIR LEG"});}
+function buildChairs(){buildChair(-4.65,0,Math.PI/2);buildChair(4.65,0,-Math.PI/2);buildChair(-2.75,3.15,Math.PI);buildChair(0,3.42,Math.PI);buildChair(2.75,3.15,Math.PI);buildChair(-2.75,-1.15,0);buildChair(0,-1.4,0);buildChair(2.75,-1.15,0);}
+function buildBench(x,z,rot){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;furniture.add(g);addBox(g,{size:[4.8,.26,1.08],position:[0,1.12,0],color:0x211b29,roughness:.59,metalness:.16,name:"SIDE BENCH"});addBox(g,{size:[4.7,.06,.94],position:[0,1.27,0],color:0x2b2333,roughness:.35,metalness:.2,name:"BENCH INSERT"});for(const px of [-2,0,2])addBox(g,{size:[.18,1.08,.18],position:[px,.53,0],color:0x292430,roughness:.42,metalness:.66,name:"BENCH SUPPORT"});}
+function buildCabinet(){const g=new THREE.Group();g.position.set(-7,0,-5.55);furniture.add(g);addBox(g,{size:[3.15,4.3,1.02],position:[0,2.15,0],color:0x16121e,roughness:.62,metalness:.27,name:"ARCHIVE CABINET"});for(let r=0;r<4;r++)for(let c=0;c<2;c++){const x=-.76+c*1.52,y=.7+r*.93;addBox(g,{size:[1.24,.7,.06],position:[x,y,-.54],material:matGlass(c?0xffa7dc:0x8be8ff,.18),name:"CABINET GLASS"});}addBox(g,{size:[2.65,.06,.08],position:[0,4.28,-.53],material:matEmissive(CONFIG.colors.pink,2.3),name:"CABINET LIGHT"});}
+function buildNotebook(){const g=new THREE.Group();g.position.set(-2.4,2.45,.8);g.rotation.z=-.12;furniture.add(g);addBox(g,{size:[1.62,.12,1.12],position:[0,0,0],color:0xd5ced9,roughness:.83,metalness:.02,name:"NOTEBOOK"});addBox(g,{size:[1.45,.018,.95],position:[0,.067,0],color:0x17131d,roughness:.76,metalness:.02,name:"NOTEBOOK COVER"});for(let i=-2;i<=2;i++)addBox(g,{size:[.95,.008,.015],position:[0,.082,i*.12],color:0xffd1e9,roughness:.8,metalness:0,name:"NOTEBOOK LINE"});}
+function buildTubeRack(x,z){const g=new THREE.Group();g.position.set(x,0,z);furniture.add(g);addBox(g,{size:[1.95,.18,.84],position:[0,1.1,0],color:0x25202d,roughness:.53,metalness:.30,name:"TUBE RACK BASE"});addBox(g,{size:[1.95,.13,.84],position:[0,1.68,0],color:0x25202d,roughness:.53,metalness:.30,name:"TUBE RACK TOP"});for(let i=0;i<5;i++){const x1=-.66+i*.33;addCylinder(g,{radiusTop:.105,radiusBottom:.105,height:1.45,radialSegments:18,position:[x1,1.36,0],material:matGlass(i%2?0xffc8e9:0xc9f3ff,.15),name:"TEST TUBE"});addCylinder(g,{radiusTop:.074,radiusBottom:.074,height:.56,radialSegments:16,position:[x1,1.08,0],material:matEmissive(i%2?CONFIG.colors.pink:CONFIG.colors.cyan,1.35),name:"TUBE LIQUID"});}}
+function buildMicroscope(x,z){const g=new THREE.Group();g.position.set(x,2.38,z);g.rotation.y=.14;furniture.add(g);addBox(g,{size:[1.35,.12,.7],position:[0,0,0],color:0x2a2532,roughness:.46,metalness:.68,name:"MICROSCOPE BASE"});addCylinder(g,{radiusTop:.17,radiusBottom:.17,height:.95,radialSegments:18,position:[0,.48,0],color:0x332c3b,roughness:.4,metalness:.72,name:"MICROSCOPE STEM"});addCylinder(g,{radiusTop:.22,radiusBottom:.22,height:.72,radialSegments:18,position:[.17,.99,-.02],rotation:[0,0,-.34],color:0x3b3443,roughness:.42,metalness:.68,name:"MICROSCOPE ARM"});addCylinder(g,{radiusTop:.13,radiusBottom:.13,height:.77,radialSegments:18,position:[.43,1.4,-.05],rotation:[0,0,-.82],color:0x24202d,roughness:.36,metalness:.76,name:"MICROSCOPE TUBE"});addSphere(g,{radius:.18,position:[.48,1.7,-.07],material:matEmissive(CONFIG.colors.cyan,1.6),name:"MICROSCOPE EYEPIECE"});}
+function buildMonitor(){const g=new THREE.Group();g.position.set(2.55,2.4,.86);furniture.add(g);addBox(g,{size:[2.25,1.28,.18],position:[0,.43,0],color:0x17131e,roughness:.33,metalness:.52,name:"MONITOR BODY"});addBox(g,{size:[1.98,.96,.04],position:[0,.43,-.11],material:matEmissive(0x2f183f,1.95),name:"MONITOR SCREEN"});addBox(g,{size:[.22,.50,.20],position:[0,-.2,0],color:0x25212d,roughness:.45,metalness:.58,name:"MONITOR NECK"});addBox(g,{size:[.76,.08,.40],position:[0,-.44,0],color:0x2b2533,roughness:.42,metalness:.54,name:"MONITOR BASE"});addBox(g,{size:[1.45,.018,.04],position:[-.3,.69,-.14],material:matEmissive(CONFIG.colors.pink,2.5),name:"MONITOR SCAN"}).userData.scanSpeed=.66;}
+function buildTerminal(x,z){const g=new THREE.Group();g.position.set(x,1.82,z);furniture.add(g);addBox(g,{size:[1.14,.60,.86],position:[0,.44,0],color:0x19141f,roughness:.44,metalness:.50,name:"TERMINAL BODY"});addBox(g,{size:[.94,.06,.63],position:[0,.78,-.02],material:matEmissive(0x2e1940,1.8),name:"TERMINAL DISPLAY"});for(let i=0;i<4;i++)addBox(g,{size:[.10,.06,.10],position:[-.33+i*.22,.16,-.25],material:matEmissive(i%2?CONFIG.colors.cyan:CONFIG.colors.pink,1.8),name:"TERMINAL LED"});}
+function buildShelf(){const g=new THREE.Group();g.position.set(6.9,0,-6);furniture.add(g);for(const y of [2.1,3.2])addBox(g,{size:[3,.22,.72],position:[0,y,0],color:0x211b29,roughness:.56,metalness:.3,name:"PROP SHELF"});for(let i=0;i<6;i++){const h=.45+Math.random()*.35;addCylinder(g,{radiusTop:.11,radiusBottom:.11,height:h,radialSegments:14,position:[-1.1+(i%3)*1.1,2.1+h/2+.12,i<3?0:.1],material:matGlass(i%2?0x8be9ff:0xffb6df,.14),name:"SHELF VIAL"});}}
+
+/* ==========================================================================
+   14. MEMORY CORE
+   ========================================================================== */
+function heartPoint(t,scale=.19){const x=16*Math.pow(Math.sin(t),3);const y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);return new THREE.Vector3(x*scale,y*scale,0);}
+function buildCore(){coreMesh=new THREE.Mesh(new THREE.IcosahedronGeometry(1.12,4),matEmissive(0xff9ad7,3.7));coreMesh.position.set(0,3.32,0);coreGroup.add(coreMesh);coreShell=new THREE.Mesh(new THREE.IcosahedronGeometry(1.58,3),new THREE.MeshBasicMaterial({color:0xff8dca,transparent:true,opacity:.055,wireframe:true,depthWrite:false}));coreShell.position.copy(coreMesh.position);coreGroup.add(coreShell);coreGlow=new THREE.Mesh(new THREE.SphereGeometry(1.84,24,18),new THREE.MeshBasicMaterial({color:0xff8ecb,transparent:true,opacity:.075,blending:THREE.AdditiveBlending,depthWrite:false}));coreGlow.position.copy(coreMesh.position);coreGroup.add(coreGlow);coreRingA=addTorus(coreGroup,{radius:1.7,tube:.034,radialSegments:48,tubularSegments:8,position:[0,3.32,0],rotation:[Math.PI/2,0,0],color:CONFIG.colors.pink,name:"CORE RING A"});coreRingB=addTorus(coreGroup,{radius:1.46,tube:.026,radialSegments:48,tubularSegments:8,position:[0,3.32,0],rotation:[.32,Math.PI/2,0],color:CONFIG.colors.violet,name:"CORE RING B"});coreDeck=addCylinder(coreGroup,{radiusTop:2.02,radiusBottom:2.16,height:.3,radialSegments:64,position:[0,2.16,0],color:0x1d1726,roughness:.41,metalness:.72,name:"CORE DECK"});coreDeck.userData.core=true;interactive.push(coreDeck);addCylinder(coreGroup,{radiusTop:1.66,radiusBottom:1.90,height:1.16,radialSegments:48,position:[0,1.54,0],color:0x17131d,roughness:.52,metalness:.66,name:"CORE PEDESTAL"});addTorus(coreGroup,{radius:1.72,tube:.042,radialSegments:48,tubularSegments:8,position:[0,1.5,0],color:CONFIG.colors.pink,name:"CORE BASE LIGHT"});const label=createTextSprite("MEMORY CORE",{fontSize:28,color:"#fff",scaleX:2.12,scaleY:.40});label.position.set(0,1.12,0);coreMesh.add(label);buildCoreParticles();buildCoreRings();}
+function buildCoreParticles(){const count=STATE.mobile?CONFIG.performance.mobileCoreParticles:CONFIG.performance.desktopCoreParticles;const positions=new Float32Array(count*3);const seeds=new Float32Array(count);const sizes=new Float32Array(count);const colors=new Float32Array(count*3);const palette=[new THREE.Color(CONFIG.colors.pink),new THREE.Color(CONFIG.colors.pinkSoft),new THREE.Color(CONFIG.colors.violet),new THREE.Color(CONFIG.colors.cyan),new THREE.Color(CONFIG.colors.white)];for(let i=0;i<count;i++){const r=randomRange(1.35,3.2),th=Math.random()*Math.PI*2,ph=Math.acos(randomRange(-1,1));positions[i*3]=Math.sin(ph)*Math.cos(th)*r;positions[i*3+1]=3.32+Math.cos(ph)*r*.64;positions[i*3+2]=Math.sin(ph)*Math.sin(th)*r;seeds[i]=Math.random();sizes[i]=randomRange(.032,.082);const c=pick(palette);colors[i*3]=c.r;colors[i*3+1]=c.g;colors[i*3+2]=c.b;}const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.BufferAttribute(positions,3));g.setAttribute("aSeed",new THREE.BufferAttribute(seeds,1));g.setAttribute("aSize",new THREE.BufferAttribute(sizes,1));g.setAttribute("color",new THREE.BufferAttribute(colors,3));const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uTime:{value:0},uPulse:{value:0}},vertexShader:`attribute float aSeed;attribute float aSize;uniform float uTime;uniform float uPulse;varying vec3 vColor;varying float vSeed;void main(){vec3 p=position;p.y+=sin(uTime*.72+aSeed*24.)*.045;p.x+=cos(uTime*.44+aSeed*17.)*.025;vec4 mv=modelViewMatrix*vec4(p,1.);float pulse=1.+uPulse*(.18+aSeed*.34);gl_PointSize=(aSize*165.*pulse)/max(1.,-mv.z);gl_Position=projectionMatrix*mv;vSeed=aSeed;vColor=color;}`,fragmentShader:`varying vec3 vColor;varying float vSeed;void main(){vec2 uv=gl_PointCoord-vec2(.5);float d=length(uv);float a=smoothstep(.52,.02,d);float c=smoothstep(.18,0.,d);gl_FragColor=vec4(mix(vColor,vec3(1.),c*.7),a*(.5+vSeed*.5));}`});coreParticles=new THREE.Points(g,m);coreParticles.frustumCulled=false;coreGroup.add(coreParticles);}
+function buildCoreRings(){const specs=[{r:2.56,c:CONFIG.colors.pink,o:.2,s:.10,rot:[.34,.2,.1]},{r:2.9,c:CONFIG.colors.violet,o:.16,s:-.08,rot:[1.02,-.2,.15]},{r:3.16,c:CONFIG.colors.cyan,o:.12,s:.06,rot:[1.45,.18,-.16]}];specs.forEach(sp=>{const ring=addTorus(coreGroup,{radius:sp.r,tube:.012,radialSegments:64,tubularSegments:6,position:[0,3.32,0],rotation:sp.rot,material:matLine(sp.c,sp.o),name:"CORE ORBIT"});ring.userData.orbitSpeed=sp.s;});}
+
+/* ==========================================================================
+   15. STATIONS
+   ========================================================================== */
+function stationPosition(i){const a=i/PEOPLE.length*Math.PI*2;const r=i%2===0?5.35:6.05;return new THREE.Vector3(Math.cos(a)*r,2.25+Math.sin(i*.81)*.26,Math.sin(a)*r*.64);}
+function createStation(person,index){const g=new THREE.Group();g.position.copy(stationPosition(index));g.userData.stationIndex=index;stationsGroup.add(g);const base=addCylinder(g,{radiusTop:.84,radiusBottom:.97,height:.3,radialSegments:32,position:[0,0,0],color:0x18131f,roughness:.52,metalness:.62,name:`STATION ${index+1} BASE`});const ring=addTorus(g,{radius:.74,tube:.032,radialSegments:36,tubularSegments:8,position:[0,.17,0],color:person.color,name:`STATION ${index+1} RING`});const plate=addBox(g,{size:[.86,.06,.50],position:[0,.58,0],color:0x221c2a,roughness:.38,metalness:.52,name:`STATION ${index+1} PLATE`});plate.userData.stationIndex=index;interactive.push(plate);const stem=addCylinder(g,{radiusTop:.024,radiusBottom:.024,height:1.05,radialSegments:8,position:[0,1,0],material:matEmissive(person.color,1.5),name:`STATION ${index+1} STEM`});stem.userData.stationIndex=index;interactive.push(stem);const orb=addSphere(g,{radius:.28,widthSegments:20,heightSegments:14,position:[0,1.62,0],material:matGlass(person.color,.24),name:`STATION ${index+1} ORB`});orb.userData.stationIndex=index;interactive.push(orb);const inner=addSphere(g,{radius:.13,widthSegments:14,heightSegments:10,position:[0,1.62,0],material:matEmissive(person.color,2.7),name:`STATION ${index+1} INNER ORB`});const num=createTextSprite(String(index+1).padStart(2,"0"),{fontSize:33,scaleX:.64,scaleY:.3});num.position.set(0,.73,0);g.add(num);const name=createTextSprite(person.name.toUpperCase(),{fontSize:17,color:hexCss(person.color),scaleX:1.52,scaleY:.28});name.position.set(0,2.04,0);g.add(name);stations.push({index,person,group:g,base,ring,plate,stem,orb,inner,phase:Math.random()*Math.PI*2});}
+function buildStations(){PEOPLE.forEach(createStation);}
+function buildLinks(){const center=new THREE.Vector3(0,3.32,0);stations.forEach((st,i)=>{const start=st.group.position.clone();start.y+=1.6;const mid=new THREE.Vector3(start.x*.42,4.48,start.z*.42);const curve=new THREE.QuadraticBezierCurve3(start,mid,center);const pts=curve.getPoints(30);const g=new THREE.BufferGeometry().setFromPoints(pts);const line=new THREE.Line(g,matLine(PEOPLE[i].color,.045));line.userData.stationIndex=i;linksGroup.add(line);});}
+
+/* ==========================================================================
+   16. ATMOSPHERE
+   ========================================================================== */
+function buildDust(){const count=STATE.mobile?CONFIG.performance.mobileDust:CONFIG.performance.desktopDust;const pos=new Float32Array(count*3),seed=new Float32Array(count),size=new Float32Array(count);for(let i=0;i<count;i++){const r=randomRange(2.5,12.5),a=Math.random()*Math.PI*2;pos[i*3]=Math.cos(a)*r;pos[i*3+1]=randomRange(.35,7.6);pos[i*3+2]=Math.sin(a)*r*.56;seed[i]=Math.random();size[i]=randomRange(.008,.032);}const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.BufferAttribute(pos,3));g.setAttribute("aSeed",new THREE.BufferAttribute(seed,1));g.setAttribute("aSize",new THREE.BufferAttribute(size,1));const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{uTime:{value:0}},vertexShader:`attribute float aSeed;attribute float aSize;uniform float uTime;varying float vAlpha;void main(){vec3 p=position;p.y+=sin(uTime*.13+aSeed*24.)*.15;p.x+=cos(uTime*.08+aSeed*18.)*.05;vec4 mv=modelViewMatrix*vec4(p,1.);gl_PointSize=aSize*128./max(1.,-mv.z);gl_Position=projectionMatrix*mv;vAlpha=.20+aSeed*.32;}`,fragmentShader:`varying float vAlpha;void main(){vec2 uv=gl_PointCoord-.5;float d=length(uv);float a=smoothstep(.5,0.,d)*vAlpha;gl_FragColor=vec4(.86,.70,.97,a);}`});mainDust=new THREE.Points(g,m);atmosphereGroup.add(mainDust);}
+function buildStars(){const count=STATE.mobile?CONFIG.performance.mobileStars:CONFIG.performance.desktopStars;const pos=new Float32Array(count*3),cols=new Float32Array(count*3);for(let i=0;i<count;i++){pos[i*3]=randomRange(-9.5,9.5);pos[i*3+1]=randomRange(.4,8.1);pos[i*3+2]=randomRange(-9,8.5);const c=i%2?new THREE.Color(CONFIG.colors.violet):new THREE.Color(CONFIG.colors.pink);cols[i*3]=c.r;cols[i*3+1]=c.g;cols[i*3+2]=c.b;}const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.BufferAttribute(pos,3));g.setAttribute("color",new THREE.BufferAttribute(cols,3));ambientStars=new THREE.Points(g,new THREE.PointsMaterial({size:STATE.mobile?.026:.034,vertexColors:true,transparent:true,opacity:.22,depthWrite:false,blending:THREE.AdditiveBlending}));atmosphereGroup.add(ambientStars);}
+
+/* ==========================================================================
+   17. REMOTE MODEL
+   ========================================================================== */
+function setupLoader(){gltfLoader=new GLTFLoader();}
+function loadRemoteModel(){if(!CONFIG.remote.model.enabled)return;gltfLoader.load(CONFIG.remote.model.url,gltf=>{remoteModel=gltf.scene;remoteModel.position.set(...CONFIG.remote.model.position);remoteModel.scale.setScalar(CONFIG.remote.model.scale);remoteModel.rotation.y=-.48;remoteModel.traverse(c=>{if(c.isMesh){c.frustumCulled=true;if(c.material&&"roughness" in c.material)c.material.roughness=Math.min(1,Number(c.material.roughness)||.5);}});modelGroup.add(remoteModel);remoteLabel=createTextSprite(CONFIG.remote.model.label,{fontSize:16,color:"#d9d5ff",scaleX:2.48,scaleY:.3});remoteLabel.position.set(CONFIG.remote.model.position[0],CONFIG.remote.model.position[1]+1.7,CONFIG.remote.model.position[2]);modelGroup.add(remoteLabel);showToast("Remote 3D specimen loaded",1800);},undefined,err=>{console.warn("GLB load error",err);showToast("Model web không tải được — scene vẫn hoạt động.",3200);});}
+
+/* ==========================================================================
+   18. BUILD EVERYTHING
+   ========================================================================== */
+function buildScene(){buildFloor();buildWalls();buildWallFrame();buildCeiling();buildWallPanels();buildTable();buildChairs();buildBench(-8,0,Math.PI/2);buildBench(8,0,-Math.PI/2);buildCabinet();buildNotebook();buildTubeRack(-.85,.95);buildMonitor();buildMicroscope(-1.95,.75);buildTerminal(.95,.92);buildShelf();buildRoomLabels();buildCore();buildStations();buildLinks();buildDust();buildStars();setupLoader();loadRemoteModel();}
+
+/* ==========================================================================
+   19. DRAWER
+   ========================================================================== */
+function setDrawer(kicker,title,note,content){DOM.drawerKicker.textContent=kicker;DOM.drawerTitle.textContent=title;DOM.drawerNote.textContent=note;DOM.drawerContent.innerHTML=content;DOM.drawer.classList.add("open");bindDrawerEvents();}
+function closeDrawer(){DOM.drawer.classList.remove("open");}
+function renderPeople(){setDrawer("Archive / People","The People","Mỗi station đại diện cho một người. Hãy thay photo, role, quote, tags bằng dữ liệu thật.",`<div class="section-head"><strong>11 Subjects</strong><span>Click to inspect</span></div><div class="grid">${PEOPLE.map(p=>`<article class="card" data-person-id="${p.id}"><img src="${p.image}" alt="${p.name}" loading="lazy" referrerpolicy="no-referrer"><div class="card-meta"><strong>${p.name}</strong><span>${p.role}</span></div></article>`).join("")}</div>`);}
+function renderTimeline(){setDrawer("Archive / Timeline","The Timeline","Timeline là nơi phù hợp để ghép ảnh nhóm, video sự kiện và những mốc thật.",`<div class="section-head"><strong>Chronology</strong><span>${TIMELINE.length} moments</span></div><div class="timeline">${TIMELINE.map(i=>`<article class="t-item"><div class="t-dot"></div><div class="t-date">${i.date}</div><div class="t-title">${i.title}</div><div class="t-copy">${i.copy}</div></article>`).join("")}</div>`);}
+function renderArchive(){setDrawer("Archive / Media","The Archive","MEDIA là khu dữ liệu chính: ảnh, video, scan giấy, poster, hoạt động và ký ức thật.",`<div class="section-head"><strong>Media Archive</strong><span>${MEDIA.length} items</span></div><div class="grid">${MEDIA.map((m,i)=>{const prev=m.type==="image"?m.url:CONFIG.remote.images.lab;return `<article class="card" data-media-index="${i}"><img src="${prev}" alt="${m.title}" loading="lazy" referrerpolicy="no-referrer"><div class="card-meta"><strong>${m.type==="video"?"▶ ":""}${m.title}</strong><span>${m.type.toUpperCase()} · CLICK TO OPEN</span></div></article>`;}).join("")}</div>`);}
+function renderWishes(){setDrawer("Archive / Wishes","The Wishes","Lời chúc, chữ ký, câu nói cuối năm hoặc những lá thư ngắn có thể đặt ở đây.",`<div class="section-head"><strong>Letters</strong><span>${WISHES.length} notes</span></div><div class="wish-list">${WISHES.map(w=>`<article class="wish"><strong>${w.author}</strong><p>${w.text}</p></article>`).join("")}</div><div style="margin-top:18px"><div class="section-head"><strong>Final Reaction</strong><span>Core</span></div><button class="primary" style="width:100%" id="drawerCore">Trigger Memory Core</button></div>`);}
+function renderMember(person){STATE.selectedPerson=person.id;markVisited(person.id-1);const tags=person.tags.map(t=>`<span class="pill">${t}</span>`).join("");setDrawer("Subject / Profile",person.name,"Một station = một người. Nội dung này sẽ dùng dữ liệu thật sau khi bạn thay CONFIG.",`<div class="profile"><img src="${person.image}" alt="${person.name}" referrerpolicy="no-referrer"><div class="profile-data"><div class="profile-role">${person.role}</div><div class="profile-name">${person.name}</div><div class="profile-quote">“${person.quote}”</div><div class="pills">${tags}</div></div></div><div class="actions"><button class="primary" id="focusPerson">Focus Station</button><button class="secondary" id="personArchive">Open Archive</button></div><div style="margin-top:18px"><div class="section-head"><strong>Archive Note</strong><span>Replaceable</span></div><article class="wish"><strong>WHY THIS EXISTS</strong><p>Đây là chỗ để thêm nickname, vai trò, câu chuyện, câu nói đặc trưng hoặc album riêng.</p></article></div>`);focusStation(person.id-1,false);}
+function bindDrawerEvents(){document.querySelectorAll("[data-person-id]").forEach(el=>el.addEventListener("click",()=>{const p=PEOPLE.find(x=>x.id===Number(el.dataset.personId));if(p)renderMember(p);}));document.querySelectorAll("[data-media-index]").forEach(el=>el.addEventListener("click",()=>{const m=MEDIA[Number(el.dataset.mediaIndex)];if(m)openMedia(m);}));const focus=document.getElementById("focusPerson");if(focus)focus.addEventListener("click",()=>{if(STATE.selectedPerson)focusStation(STATE.selectedPerson-1,true);closeDrawer();});const arch=document.getElementById("personArchive");if(arch)arch.addEventListener("click",renderArchive);const core=document.getElementById("drawerCore");if(core)core.addEventListener("click",()=>{closeDrawer();triggerCore();});}
+
+/* ==========================================================================
+   20. MEDIA MODAL
+   ========================================================================== */
+function openMedia(item){DOM.mediaStage.innerHTML="";DOM.mediaTitle.textContent=item.title;DOM.mediaDescription.textContent=item.description;if(item.type==="image"){const img=document.createElement("img");img.src=item.url;img.alt=item.title;img.referrerPolicy="no-referrer";DOM.mediaStage.appendChild(img);}else{const v=document.createElement("video");v.src=item.url;v.controls=true;v.playsInline=true;v.preload="metadata";DOM.mediaStage.appendChild(v);}DOM.mediaModal.classList.add("open");DOM.mediaModal.setAttribute("aria-hidden","false");}
+function closeMedia(){const v=DOM.mediaStage.querySelector("video");if(v){v.pause();v.removeAttribute("src");v.load();}DOM.mediaStage.innerHTML="";DOM.mediaModal.classList.remove("open");DOM.mediaModal.setAttribute("aria-hidden","true");}
+
+/* ==========================================================================
+   21. CAMERA FOCUS
+   ========================================================================== */
+function focusStation(index,closeAfter=false){const st=stations[index];if(!st)return;const wp=new THREE.Vector3();st.group.getWorldPosition(wp);STATE.cameraFocus={target:new THREE.Vector3(wp.x,wp.y+.96,wp.z),cameraPosition:new THREE.Vector3(wp.x*1.18,wp.y+1.64,wp.z*1.18+5.35),progress:0,closeAfter};STATE.selectedPerson=PEOPLE[index].id;markVisited(index);showToast(`${PEOPLE[index].name} · station activated`);}
+function updateCameraFocus(dt){if(!STATE.cameraFocus)return;const f=STATE.cameraFocus;f.progress+=dt*.82;const t=easeOutCubic(clamp(f.progress,0,1));camera.position.lerp(f.cameraPosition,t*.08);controls.target.lerp(f.target,t*.08);if(f.progress>1.2)STATE.cameraFocus=null;}
+
+/* ==========================================================================
+   22. CORE REACTION
+   ========================================================================== */
+function triggerCore(){STATE.corePulse=1;STATE.coreReaction=1;DOM.hudCore.textContent="REACTING";DOM.missionCopy.textContent="Memory Core đang phản ứng với dữ liệu của cả căn phòng.";bloomPass.strength=STATE.mobile?1.02:1.40;showToast("MEMORY CORE · REACTION STARTED",2800);setTimeout(()=>STATE.coreReaction=0,2800);setTimeout(()=>{DOM.hudCore.textContent=STATE.visited.size>=PEOPLE.length?"COMPLETE":"STABLE";DOM.missionCopy.textContent="Reaction complete. Một căn phòng, 11 con người, vô số ký ức.";bloomPass.strength=STATE.mobile?CONFIG.performance.bloomMobile:CONFIG.performance.bloomDesktop;},4500);}
+function updateCore(time,dt){if(!coreMesh)return;const scale=1+Math.sin(time*1.55)*.035+STATE.corePulse*.18;coreMesh.scale.setScalar(scale);coreMesh.rotation.x+=dt*.18;coreMesh.rotation.y+=dt*(.3+STATE.coreReaction*.55);coreShell.rotation.x-=dt*.11;coreShell.rotation.y+=dt*(.15+STATE.coreReaction*.28);coreGlow.scale.setScalar(1+STATE.corePulse*.36);coreGlow.material.opacity=.065+STATE.corePulse*.10;coreRingA.rotation.z+=dt*(.11+STATE.coreReaction*.28);coreRingB.rotation.x+=dt*(-.13-STATE.coreReaction*.40);if(coreParticles){coreParticles.material.uniforms.uTime.value=time;coreParticles.material.uniforms.uPulse.value=STATE.corePulse;coreParticles.rotation.y+=dt*(.035+STATE.coreReaction*.32);}updateCoreParticleReaction(time);STATE.corePulse=damp(STATE.corePulse,0,3.7,dt);}
+function updateCoreParticleReaction(time){if(!coreParticles)return;const p=coreParticles.geometry.attributes.position;const n=p.count;for(let i=0;i<n;i++){const phase=i/n;const hp=heartPoint(phase*Math.PI*2*8);const spread=STATE.coreReaction*(1+Math.sin(phase*31+time*.8)*.16);const tx=hp.x*(1+STATE.coreReaction*.08);const ty=hp.y+3.4;const tz=Math.sin(phase*71+time*1.2)*.72*spread+Math.cos(phase*27+time*.8)*.16;if(STATE.coreReaction){p.setXYZ(i,lerp(p.getX(i),tx,.046),lerp(p.getY(i),ty,.046),lerp(p.getZ(i),tz,.046));}else{const r=1.35+(i%97)/97*1.85;const th=(i%997)/997*Math.PI*2;const ph=Math.acos(1-2*((i%389)/389));const bx=Math.sin(ph)*Math.cos(th)*r,by=3.32+Math.cos(ph)*r*.64,bz=Math.sin(ph)*Math.sin(th)*r;p.setXYZ(i,lerp(p.getX(i),bx,.018),lerp(p.getY(i),by,.018),lerp(p.getZ(i),bz,.018));}}p.needsUpdate=true;}
+
+/* ==========================================================================
+   23. ANIMATION UPDATES
+   ========================================================================== */
+function updateStations(time,dt){stations.forEach(st=>{const visited=STATE.visited.has(st.index);const bob=Math.sin(time*1.5+st.phase)*.045;st.inner.position.y=1.62+bob;st.orb.position.y=1.62+bob*.72;st.ring.rotation.z+=dt*.11;const s=1+Math.sin(time*1.9+st.index)*.05;st.inner.scale.setScalar(s*(visited?1.12:.88));st.orb.scale.setScalar(visited?1.03+Math.sin(time*1.2+st.index)*.035:.92);const link=linksGroup.children.find(x=>x.userData?.stationIndex===st.index);if(link)link.material.opacity=visited?.17:.045;});}
+function updateAtmosphere(time,dt){if(mainDust)mainDust.material.uniforms.uTime.value=time;if(ambientStars){ambientStars.rotation.y+=dt*.0035;ambientStars.rotation.x=Math.sin(time*.05)*.015;}}
+function updateRemoteModel(time,dt){if(remoteModel){remoteModel.rotation.y+=dt*.13;remoteModel.position.y=CONFIG.remote.model.position[1]+Math.sin(time*.9)*.045;}if(remoteLabel)remoteLabel.position.y=CONFIG.remote.model.position[1]+1.7+Math.sin(time*.9)*.045;}
+function updatePanels(time){room.children.forEach(o=>{if(o.name==="ARCHIVE GLOW"&&o.material?.emissiveIntensity!==undefined)o.material.emissiveIntensity=1.45+Math.sin(time*.72+(o.userData.phase||0))*.18;});}
+function updateLights(time){room.children.forEach(o=>{if(o.name==="CEILING LIGHT"&&o.material?.emissiveIntensity!==undefined)o.material.emissiveIntensity=1.52+Math.sin(time*.67+o.id*.14)*.07;});}
+function updateMonitor(time){furniture.traverse(o=>{if(o.name!=="MONITOR SCAN")return;const cycle=(time*(o.userData.scanSpeed||.66))%1;o.position.x=-.36+cycle*.72;});}
+function updateClock(time){if(!roomClock)return;roomClock.position.y=6.47+Math.sin(time*.4)*.018;}
+
+/* ==========================================================================
+   24. POINTER / RAYCAST
+   ========================================================================== */
+function normalizePointer(e){pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;raycaster.setFromCamera(pointer,camera);}
+function pickObject(e){normalizePointer(e);const hits=raycaster.intersectObjects(interactive,true);return hits[0]?.object||null;}
+function handlePointerDown(e){STATE.pointerDown={x:e.clientX,y:e.clientY};}
+function handlePointerMove(e){const obj=pickObject(e);STATE.hovered=obj;renderer.domElement.style.cursor=obj?"pointer":"grab";}
+function handleClick(e){if(!STATE.pointerDown)return;const dist=Math.hypot(e.clientX-STATE.pointerDown.x,e.clientY-STATE.pointerDown.y);STATE.pointerDown=null;if(dist>10)return;DOM.hint.classList.add("hide");const obj=pickObject(e);if(!obj)return;if(obj.userData?.stationIndex!==undefined){renderMember(PEOPLE[obj.userData.stationIndex]);return;}if(obj.userData?.core){triggerCore();return;}}
+
+/* ==========================================================================
+   25. NAVIGATION
+   ========================================================================== */
+function navigate(section){STATE.activeSection=section;document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.nav===section));if(section==="lab"){closeDrawer();STATE.cameraFocus=null;controls.target.set(0,2.15,0);showToast("Central Laboratory");}else if(section==="people")renderPeople();else if(section==="timeline")renderTimeline();else if(section==="archive")renderArchive();else if(section==="wishes")renderWishes();}
+function bindNav(){document.querySelectorAll(".nav-btn").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.nav)));}
+
+/* ==========================================================================
+   26. INTRO / RESIZE / KEYS
+   ========================================================================== */
+function enterLab(){STATE.introHidden=true;DOM.intro.classList.add("hide");DOM.hint.classList.remove("hide");setTimeout(()=>DOM.intro.style.display="none",760);showToast("Archive online · welcome to the lab",2300);}
+function handleResize(){STATE.mobile=innerWidth<=760;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();const dpr=Math.min(devicePixelRatio||1,STATE.mobile?CONFIG.performance.maxMobileDpr:CONFIG.performance.maxDesktopDpr);renderer.setPixelRatio(dpr);renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);bloomPass.resolution.set(innerWidth,innerHeight);bloomPass.strength=STATE.mobile?CONFIG.performance.bloomMobile:CONFIG.performance.bloomDesktop;DOM.hudQuality.textContent=STATE.mobile?"MOBILE":"AUTO";}
+function bindGlobalEvents(){DOM.enterBtn.addEventListener("click",enterLab);DOM.demoBtn.addEventListener("click",()=>{enterLab();setTimeout(triggerCore,650);});DOM.closeDrawer.addEventListener("click",closeDrawer);DOM.mediaModal.addEventListener("click",e=>{if(e.target===DOM.mediaModal)closeMedia();});bindNav();renderer.domElement.addEventListener("pointerdown",handlePointerDown,{passive:true});renderer.domElement.addEventListener("pointermove",handlePointerMove,{passive:true});renderer.domElement.addEventListener("click",handleClick);window.addEventListener("resize",handleResize,{passive:true});window.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawer();closeMedia();}if(e.key.toLowerCase()==="c")triggerCore();if(e.key==="1")navigate("lab");if(e.key==="2")navigate("people");if(e.key==="3")navigate("timeline");if(e.key==="4")navigate("archive");if(e.key==="5")navigate("wishes");});}
+
+/* ==========================================================================
+   27. MAIN LOOP
+   ========================================================================== */
+function animate(now){requestAnimationFrame(animate);const dt=Math.min((now-STATE.lastNow)/1000,.05);STATE.lastNow=now;STATE.elapsed+=dt;const time=STATE.elapsed;updateCore(time,dt);updateStations(time,dt);updateAtmosphere(time,dt);updateRemoteModel(time,dt);updatePanels(time);updateLights(time);updateMonitor(time);updateClock(time);updateCameraFocus(dt);controls.update();composer.render();}
+
+/* ==========================================================================
+   28. BOOT
+   ========================================================================== */
+function initialize(){DOM.hudSubjects.textContent=`${PEOPLE.length} SUBJECTS`;DOM.hudQuality.textContent=STATE.mobile?"MOBILE":"AUTO";setupRenderer();setupScene();setupCamera();setupControls();setupComposer();setupLights();buildScene();bindGlobalEvents();updateMission();DOM.hudRender.textContent="READY";requestAnimationFrame(animate);window.setTimeout(loadRemoteModel,120);}
+
+window.addEventListener("error",e=>console.error("Memory Lab error",e.error||e.message));
+window.addEventListener("unhandledrejection",e=>console.error("Memory Lab promise",e.reason));
+initialize();
+
+/* ==========================================================================
+   29. FUTURE DATA CONTRACT NOTES
+   --------------------------------------------------------------------------
+   1. PEOPLE.image -> ảnh thật của thành viên.
+   2. PEOPLE.role -> vai trò / nickname.
+   3. PEOPLE.quote -> câu nói.
+   4. MEDIA -> album ảnh và video.
+   5. TIMELINE -> các mốc thật.
+   6. WISHES -> lời chúc thật.
+   7. CONFIG.remote.model -> GLB thật nếu muốn thêm model ngoài web.
+   ========================================================================== */
+/* ARCHITECTURE NOTE 001: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 002: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 003: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 004: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 005: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 006: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 007: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 008: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 009: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 010: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 011: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 012: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 013: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 014: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 015: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 016: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 017: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 018: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 019: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 020: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 021: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 022: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 023: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 024: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 025: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 026: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 027: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 028: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 029: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 030: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 031: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 032: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 033: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 034: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 035: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 036: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 037: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 038: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 039: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 040: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 041: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 042: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 043: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 044: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 045: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 046: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 047: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 048: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 049: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 050: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 051: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 052: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 053: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 054: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 055: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 056: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 057: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 058: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 059: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 060: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 061: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 062: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 063: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 064: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 065: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 066: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 067: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 068: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 069: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 070: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 071: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 072: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 073: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 074: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 075: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 076: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 077: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 078: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 079: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 080: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 081: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 082: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 083: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 084: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 085: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 086: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 087: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 088: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 089: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 090: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 091: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 092: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 093: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 094: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 095: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 096: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 097: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 098: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 099: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 100: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 101: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 102: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 103: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 104: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 105: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 106: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 107: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 108: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 109: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 110: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 111: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 112: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 113: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 114: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 115: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 116: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 117: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 118: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 119: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 120: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 121: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 122: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 123: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 124: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 125: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 126: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 127: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 128: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 129: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 130: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 131: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 132: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 133: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 134: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 135: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 136: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 137: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 138: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 139: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 140: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 141: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 142: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 143: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 144: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 145: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 146: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 147: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 148: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 149: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 150: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 151: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 152: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 153: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 154: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 155: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 156: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 157: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 158: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 159: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 160: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 161: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 162: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 163: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 164: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 165: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 166: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 167: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 168: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 169: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 170: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 171: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 172: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 173: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 174: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 175: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 176: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 177: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 178: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 179: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 180: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 181: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 182: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 183: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 184: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 185: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 186: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 187: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 188: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 189: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 190: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 191: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 192: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 193: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 194: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 195: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 196: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 197: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 198: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 199: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 200: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 201: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 202: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 203: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 204: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 205: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 206: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 207: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 208: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 209: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 210: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 211: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 212: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 213: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 214: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 215: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 216: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 217: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 218: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 219: Replace demo data with project-owned assets when productionizing. */
+/* ARCHITECTURE NOTE 220: Replace demo data with project-owned assets when productionizing. */
+
+/* ==========================================================================
+   30. OPTIONAL PRODUCTION EXTENSIONS
+   These helpers are intentionally self-contained. They can be enabled later
+   when the real yearbook assets are ready.
+   ========================================================================== */
+
+const Production = {
+  storageKey: "memory-lab-settings-v1",
+  defaultSettings: {
+    autoRotate: false,
+    lowPower: false,
+    soundEnabled: false,
+    showHints: true
+  }
+};
+
+function cloneData(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function mergeObjects(base, extra) {
+  return Object.assign({}, base || {}, extra || {});
+}
+
+function readStoredSettings() {
+  try {
+    const raw = localStorage.getItem(Production.storageKey);
+    if (!raw) return cloneData(Production.defaultSettings);
+    return mergeObjects(Production.defaultSettings, JSON.parse(raw));
+  } catch (error) {
+    console.warn("Settings read failed", error);
+    return cloneData(Production.defaultSettings);
+  }
+}
+
+function writeStoredSettings(settings) {
+  try {
+    localStorage.setItem(
+      Production.storageKey,
+      JSON.stringify(
+        mergeObjects(Production.defaultSettings, settings)
+      )
+    );
+    return true;
+  } catch (error) {
+    console.warn("Settings write failed", error);
+    return false;
+  }
+}
+
+function setLowPowerMode(enabled) {
+  const on = Boolean(enabled);
+  const settings = readStoredSettings();
+  settings.lowPower = on;
+  writeStoredSettings(settings);
+  if (renderer) {
+    renderer.setPixelRatio(on ? 0.75 : Math.min(devicePixelRatio || 1, STATE.mobile ? 1 : 1.45));
+  }
+  if (bloomPass) {
+    bloomPass.strength = on ? 0.45 : (STATE.mobile ? CONFIG.performance.bloomMobile : CONFIG.performance.bloomDesktop);
+  }
+  DOM.hudQuality.textContent = on ? "LOW POWER" : (STATE.mobile ? "MOBILE" : "AUTO");
+  showToast(on ? "Low Power mode" : "Quality restored");
+}
+
+function toggleAutoRotate(enabled) {
+  const value = Boolean(enabled);
+  const settings = readStoredSettings();
+  settings.autoRotate = value;
+  writeStoredSettings(settings);
+  if (controls) controls.autoRotate = value;
+  showToast(value ? "Auto orbit enabled" : "Auto orbit disabled");
+}
+
+function toggleHints(enabled) {
+  const value = Boolean(enabled);
+  const settings = readStoredSettings();
+  settings.showHints = value;
+  writeStoredSettings(settings);
+  DOM.hint.classList.toggle("hide", !value);
+}
+
+function makeSvgDataUri(svg) {
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
+
+function makeFallbackImage(label, accent = "#ff79c8") {
+  const safe = String(label).replace(/[<>&\"]/g, "");
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+      <defs>
+        <radialGradient id="g" cx="50%" cy="40%" r="65%">
+          <stop offset="0%" stop-color="#29152d"/>
+          <stop offset="100%" stop-color="#07050c"/>
+        </radialGradient>
+      </defs>
+      <rect width="1200" height="900" fill="url(#g)"/>
+      <circle cx="600" cy="390" r="190" fill="${accent}" opacity=".11"/>
+      <circle cx="600" cy="390" r="118" fill="none" stroke="${accent}" stroke-width="3" opacity=".6"/>
+      <circle cx="600" cy="390" r="9" fill="${accent}"/>
+      <text x="600" y="700" text-anchor="middle" fill="#fff" font-family="Arial" font-size="44" font-weight="700">${safe}</text>
+      <text x="600" y="754" text-anchor="middle" fill="#bfb4c7" font-family="Arial" font-size="22">MEMORY LAB FALLBACK</text>
+    </svg>`;
+  return makeSvgDataUri(svg);
+}
+
+function installImageFallbacks(root = document) {
+  root.querySelectorAll("img").forEach(img => {
+    if (img.dataset.fallbackBound) return;
+    img.dataset.fallbackBound = "1";
+    img.addEventListener("error", () => {
+      img.src = makeFallbackImage(
+        img.alt || "Memory",
+        "#ff79c8"
+      );
+      img.removeAttribute("srcset");
+    }, { once: true });
+  });
+}
+
+function installVideoFallbacks(root = document) {
+  root.querySelectorAll("video").forEach(video => {
+    if (video.dataset.fallbackBound) return;
+    video.dataset.fallbackBound = "1";
+    video.addEventListener("error", () => {
+      showToast("Video không tải được từ nguồn hiện tại.", 2600);
+    }, { once: true });
+  });
+}
+
+class AssetRegistry {
+  constructor() {
+    this.images = new Map();
+    this.videos = new Map();
+    this.models = new Map();
+  }
+
+  registerImage(key, url) {
+    if (!key || !url) return;
+    this.images.set(String(key), String(url));
+  }
+
+  registerVideo(key, url) {
+    if (!key || !url) return;
+    this.videos.set(String(key), String(url));
+  }
+
+  registerModel(key, url) {
+    if (!key || !url) return;
+    this.models.set(String(key), String(url));
+  }
+
+  getImage(key, fallbackLabel = "IMAGE") {
+    return this.images.get(String(key)) || makeFallbackImage(fallbackLabel);
+  }
+
+  getVideo(key) {
+    return this.videos.get(String(key)) || "";
+  }
+
+  getModel(key) {
+    return this.models.get(String(key)) || "";
+  }
+
+  exportJSON() {
+    return {
+      images: Object.fromEntries(this.images.entries()),
+      videos: Object.fromEntries(this.videos.entries()),
+      models: Object.fromEntries(this.models.entries())
+    };
+  }
+}
+
+const ASSETS = new AssetRegistry();
+
+ASSETS.registerImage("lab", CONFIG.remote.images.lab);
+ASSETS.registerImage("glass", CONFIG.remote.images.glass);
+ASSETS.registerImage("people", CONFIG.remote.images.people);
+ASSETS.registerImage("science", CONFIG.remote.images.science);
+ASSETS.registerImage("notebook", CONFIG.remote.images.notebook);
+ASSETS.registerImage("computer", CONFIG.remote.images.computer);
+ASSETS.registerVideo("flower", CONFIG.remote.videos.flower);
+ASSETS.registerModel("specimen", CONFIG.remote.model.url);
+
+class LocalArchive {
+  constructor(name = "memory-lab-db") {
+    this.name = name;
+    this.version = 1;
+    this.db = null;
+  }
+
+  open() {
+    return new Promise((resolve, reject) => {
+      if (!("indexedDB" in window)) {
+        resolve(null);
+        return;
+      }
+      const request = indexedDB.open(this.name, this.version);
+      request.onupgradeneeded = event => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains("photos")) {
+          db.createObjectStore("photos", { keyPath: "id", autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains("videos")) {
+          db.createObjectStore("videos", { keyPath: "id", autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains("wishes")) {
+          db.createObjectStore("wishes", { keyPath: "id", autoIncrement: true });
+        }
+      };
+      request.onsuccess = event => {
+        this.db = event.target.result;
+        resolve(this.db);
+      };
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  add(store, value) {
+    return new Promise((resolve, reject) => {
+      if (!this.db) {
+        resolve(null);
+        return;
+      }
+      const tx = this.db.transaction(store, "readwrite");
+      const request = tx.objectStore(store).add(value);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  getAll(store) {
+    return new Promise((resolve, reject) => {
+      if (!this.db) {
+        resolve([]);
+        return;
+      }
+      const tx = this.db.transaction(store, "readonly");
+      const request = tx.objectStore(store).getAll();
+      request.onsuccess = () => resolve(request.result || []);
+      request.onerror = () => reject(request.error);
+    });
+  }
+}
+
+const archiveDB = new LocalArchive();
+
+archiveDB.open().catch(error => {
+  console.warn("IndexedDB unavailable", error);
+});
+
+/* ==========================================================================
+   31. OPTIONAL AUDIO ENGINE
+   ========================================================================== */
+class AmbientAudio {
+  constructor() {
+    this.ctx = null;
+    this.master = null;
+    this.osc = null;
+    this.gain = null;
+    this.enabled = false;
+  }
+
+  start() {
+    if (this.enabled) return;
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) {
+      showToast("Thiết bị không hỗ trợ Web Audio.");
+      return;
+    }
+    this.ctx = this.ctx || new AudioContext();
+    this.master = this.master || this.ctx.createGain();
+    this.master.gain.value = 0.025;
+    this.master.connect(this.ctx.destination);
+    this.osc = this.ctx.createOscillator();
+    this.gain = this.ctx.createGain();
+    this.osc.type = "sine";
+    this.osc.frequency.value = 73.42;
+    this.gain.gain.value = 0;
+    this.osc.connect(this.gain);
+    this.gain.connect(this.master);
+    this.osc.start();
+    this.gain.gain.linearRampToValueAtTime(.5, this.ctx.currentTime + 1.8);
+    this.enabled = true;
+  }
+
+  stop() {
+    if (!this.enabled || !this.ctx || !this.gain || !this.osc) return;
+    const now = this.ctx.currentTime;
+    this.gain.gain.cancelScheduledValues(now);
+    this.gain.gain.setTargetAtTime(0, now, .12);
+    setTimeout(() => {
+      try { this.osc.stop(); } catch (_) {}
+      try { this.osc.disconnect(); } catch (_) {}
+      this.osc = null;
+      this.gain = null;
+    }, 550);
+    this.enabled = false;
+  }
+
+  setEnabled(enabled) {
+    if (enabled) this.start();
+    else this.stop();
+    const settings = readStoredSettings();
+    settings.soundEnabled = Boolean(enabled);
+    writeStoredSettings(settings);
+  }
+}
+
+const ambientAudio = new AmbientAudio();
+
+/* ==========================================================================
+   32. OPTIONAL FINAL SEQUENCE CONTROLLER
+   ========================================================================== */
+class FinalSequence {
+  constructor() {
+    this.running = false;
+    this.step = 0;
+    this.timer = null;
+  }
+
+  start() {
+    if (this.running) return;
+    this.running = true;
+    this.step = 0;
+    this.next();
+  }
+
+  next() {
+    if (!this.running) return;
+    this.step += 1;
+    if (this.step === 1) {
+      showToast("11 signals detected", 1200);
+      stations.forEach((st, i) => {
+        setTimeout(() => {
+          STATE.visited.add(i);
+          updateMission();
+          st.group.scale.setScalar(1.2);
+          setTimeout(() => st.group.scale.setScalar(1), 240);
+        }, i * 90);
+      });
+    }
+    if (this.step === 2) {
+      setTimeout(() => triggerCore(), 1100);
+    }
+    if (this.step === 3) {
+      setTimeout(() => {
+        navigate("archive");
+        showToast("Final archive opened", 1800);
+      }, 4300);
+    }
+    if (this.step >= 3) {
+      this.running = false;
+      return;
+    }
+    this.timer = setTimeout(() => this.next(), 1150);
+  }
+
+  stop() {
+    this.running = false;
+    clearTimeout(this.timer);
+    this.timer = null;
+  }
+}
+
+const finalSequence = new FinalSequence();
+
+/* ==========================================================================
+   33. HEART SHAPE HELPERS FOR FUTURE PHOTO MORPH
+   ========================================================================== */
+function sampleHeart(count = 1000) {
+  const output = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const t = (i / count) * Math.PI * 2 * 8;
+    const p = heartPoint(t, .20);
+    const layer = ((i % 17) / 17 - .5) * .16;
+    output[i * 3] = p.x;
+    output[i * 3 + 1] = p.y + 3.4;
+    output[i * 3 + 2] = layer;
+  }
+  return output;
+}
+
+function computePhotoGrid(width, height, maxPixels = 9000) {
+  const safeWidth = Math.max(1, Math.floor(width));
+  const safeHeight = Math.max(1, Math.floor(height));
+  const ratio = safeWidth / safeHeight;
+  let w = Math.max(16, Math.round(Math.sqrt(maxPixels * ratio)));
+  let h = Math.max(16, Math.round(w / ratio));
+  while (w * h > maxPixels) {
+    w -= 1;
+    h = Math.max(16, Math.round(w / ratio));
+  }
+  return { width: w, height: h };
+}
+
+function imageToParticleData(image, maxPixels = 9000) {
+  return new Promise((resolve, reject) => {
+    if (!(image instanceof HTMLImageElement)) {
+      reject(new TypeError("Expected HTMLImageElement"));
+      return;
+    }
+    const finish = () => {
+      const size = computePhotoGrid(image.naturalWidth || 1, image.naturalHeight || 1, maxPixels);
+      const canvas = document.createElement("canvas");
+      canvas.width = size.width;
+      canvas.height = size.height;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx) {
+        reject(new Error("Canvas context unavailable"));
+        return;
+      }
+      try {
+        ctx.drawImage(image, 0, 0, size.width, size.height);
+        const data = ctx.getImageData(0, 0, size.width, size.height).data;
+        const points = [];
+        for (let y = 0; y < size.height; y++) {
+          for (let x = 0; x < size.width; x++) {
+            const k = (y * size.width + x) * 4;
+            const alpha = data[k + 3] / 255;
+            if (alpha < .08) continue;
+            const brightness = (data[k] + data[k + 1] + data[k + 2]) / (255 * 3);
+            if (brightness < .035) continue;
+            points.push({
+              x: x / Math.max(1, size.width - 1) - .5,
+              y: .5 - y / Math.max(1, size.height - 1),
+              r: data[k] / 255,
+              g: data[k + 1] / 255,
+              b: data[k + 2] / 255,
+              a: alpha
+            });
+          }
+        }
+        resolve({ width: size.width, height: size.height, points });
+      } catch (error) {
+        reject(error);
+      }
+    };
+    if (image.complete && image.naturalWidth) finish();
+    else image.addEventListener("load", finish, { once: true });
+    image.addEventListener("error", () => reject(new Error("Image load failed")), { once: true });
+  });
+}
+
+/* ==========================================================================
+   34. ACCESSIBILITY / KEYBOARD HELPERS
+   ========================================================================== */
+function focusFirstInteractive() {
+  const first = DOM.drawer.querySelector("button, [tabindex='0']");
+  if (first) first.focus({ preventScroll: true });
+}
+
+function announce(message) {
+  const live = document.createElement("div");
+  live.setAttribute("aria-live", "polite");
+  live.setAttribute("aria-atomic", "true");
+  live.style.position = "fixed";
+  live.style.width = "1px";
+  live.style.height = "1px";
+  live.style.overflow = "hidden";
+  live.style.clipPath = "inset(50%)";
+  live.textContent = message;
+  document.body.appendChild(live);
+  setTimeout(() => live.remove(), 1000);
+}
+
+/* ==========================================================================
+   35. SAFE MEDIA PRELOAD
+   ========================================================================== */
+function preloadImage(url) {
+  return new Promise(resolve => {
+    if (!url) {
+      resolve(false);
+      return;
+    }
+    const image = new Image();
+    image.referrerPolicy = "no-referrer";
+    image.onload = () => resolve(true);
+    image.onerror = () => resolve(false);
+    image.src = url;
+  });
+}
+
+function preloadMediaBatch(items = []) {
+  return Promise.allSettled(
+    items.filter(Boolean).map(url => preloadImage(url))
+  );
+}
+
+/* ==========================================================================
+   36. EXPORT / IMPORT YEARBOOK DATA
+   ========================================================================== */
+function exportYearbookData() {
+  const payload = {
+    project: cloneData(CONFIG.project),
+    people: cloneData(PEOPLE),
+    timeline: cloneData(TIMELINE),
+    wishes: cloneData(WISHES),
+    media: cloneData(MEDIA),
+    assets: ASSETS.exportJSON()
+  };
+  return JSON.stringify(payload, null, 2);
+}
+
+function downloadTextFile(filename, content, type = "application/json") {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function exportArchive() {
+  downloadTextFile(
+    "memory-lab-archive.json",
+    exportYearbookData()
+  );
+  showToast("Archive JSON exported");
+}
+
+/* ==========================================================================
+   37. OPTIONAL DEBUG PANEL
+   ========================================================================== */
+const Debug = {
+  enabled: false,
+  toggle() {
+    this.enabled = !this.enabled;
+    if (this.enabled) {
+      showToast("Debug mode ON");
+      console.table({
+        people: PEOPLE.length,
+        stations: stations.length,
+        media: MEDIA.length,
+        visited: STATE.visited.size,
+        mobile: STATE.mobile,
+        pixelRatio: renderer?.getPixelRatio?.() || 0
+      });
+    } else {
+      showToast("Debug mode OFF");
+    }
+  }
+};
+
+/* ==========================================================================
+   38. OPTIONAL USER SHORTCUTS
+   ========================================================================== */
+window.MemoryLab = {
+  config: CONFIG,
+  people: PEOPLE,
+  timeline: TIMELINE,
+  wishes: WISHES,
+  media: MEDIA,
+  assets: ASSETS,
+  archive: archiveDB,
+  audio: ambientAudio,
+  final: finalSequence,
+  exportArchive,
+  triggerCore,
+  navigate,
+  focusStation,
+  setLowPowerMode,
+  toggleAutoRotate,
+  toggleHints,
+  Debug
+};
+
+/* ==========================================================================
+   39. APPLY STORED SETTINGS
+   ========================================================================== */
+const storedSettings = readStoredSettings();
+if (storedSettings.autoRotate && controls) {
+  controls.autoRotate = true;
+}
+if (!storedSettings.showHints) {
+  DOM.hint.classList.add("hide");
+}
+
+/* ==========================================================================
+   40. POST-RENDER FALLBACK BINDINGS
+   ========================================================================== */
+const fallbackObserver = new MutationObserver(mutations => {
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) {
+      if (!(node instanceof Element)) continue;
+      installImageFallbacks(node);
+      installVideoFallbacks(node);
+    }
+  }
+});
+
+fallbackObserver.observe(DOM.drawer, {
+  childList: true,
+  subtree: true
+});
+
+installImageFallbacks(document);
+installVideoFallbacks(document);
+
+/* ==========================================================================
+   41. PRELOAD THE FIRST VISUAL LAYER
+   ========================================================================== */
+preloadMediaBatch([
+  CONFIG.remote.images.lab,
+  CONFIG.remote.images.people,
+  CONFIG.remote.images.science
+]).then(results => {
+  const ok = results.filter(r => r.status === "fulfilled" && r.value).length;
+  if (ok > 0) {
+    console.info("Memory Lab visual warm-up:", ok);
+  }
+});
+
+/* ==========================================================================
+   42. FINAL NOTE
+   ========================================================================== */
+// Production architecture: keep the HTML shell stable and move only data/assets
+// into JSON or IndexedDB when the real yearbook content is ready.
+// This preserves the visual system while allowing the content to scale.
+</script>
 </body>
 </html>
